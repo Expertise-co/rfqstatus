@@ -73,45 +73,6 @@ def load_sheet():
     df = pd.DataFrame(values[1:], columns=values[0])
     return df
 
-# ---------------------- SIDEBAR: UPLOAD ---------------------- #
-st.sidebar.header("📤 Upload Options")
-
-uploaded_file = st.sidebar.file_uploader("Upload CSV to Google Sheets", type="csv")
-
-upload_action = None
-if uploaded_file:
-    upload_df = pd.read_csv(uploaded_file)
-    st.sidebar.subheader("Preview of Uploaded CSV")
-    st.sidebar.dataframe(upload_df.head(5))
-
-    upload_action = st.sidebar.radio(
-        "Choose Upload Action",
-        options=["Replace Sheet", "Append to Sheet"]
-    )
-    if st.sidebar.button("Confirm Upload"):
-        creds = connect_to_google()
-        sheets_api = build("sheets", "v4", credentials=creds)
-        values = [upload_df.columns.tolist()] + upload_df.values.tolist()
-        body = {"values": values}
-
-        if upload_action == "Replace Sheet":
-            sheets_api.spreadsheets().values().update(
-                spreadsheetId=SPREADSHEET_ID,
-                range=RANGE,
-                valueInputOption="RAW",
-                body=body
-            ).execute()
-            st.sidebar.success(f"✅ Sheet replaced with {len(upload_df)} rows")
-        else:  # Append
-            sheets_api.spreadsheets().values().append(
-                spreadsheetId=SPREADSHEET_ID,
-                range=RANGE,
-                valueInputOption="RAW",
-                insertDataOption="INSERT_ROWS",
-                body={"values": upload_df.values.tolist()}
-            ).execute()
-            st.sidebar.success(f"✅ {len(upload_df)} rows appended successfully")
-
 # -----------------------------------------------------
 # Load Data from Google Sheets
 # -----------------------------------------------------
@@ -159,6 +120,45 @@ if selected_client != "All":
 if selected_affiliate != "All":
     filtered_df = filtered_df[filtered_df['Affiliate'] == selected_affiliate]
 
+# ---------------------- SIDEBAR: UPLOAD ---------------------- #
+st.sidebar.header("📤 Upload Options")
+
+uploaded_file = st.sidebar.file_uploader("Upload CSV to Google Sheets", type="csv")
+
+upload_action = None
+if uploaded_file:
+    upload_df = pd.read_csv(uploaded_file)
+    st.sidebar.subheader("Preview of Uploaded CSV")
+    st.sidebar.dataframe(upload_df.head(5))
+
+    upload_action = st.sidebar.radio(
+        "Choose Upload Action",
+        options=["Replace Sheet", "Append to Sheet"]
+    )
+    if st.sidebar.button("Confirm Upload"):
+        creds = connect_to_google()
+        sheets_api = build("sheets", "v4", credentials=creds)
+        values = [upload_df.columns.tolist()] + upload_df.values.tolist()
+        body = {"values": values}
+
+        if upload_action == "Replace Sheet":
+            sheets_api.spreadsheets().values().update(
+                spreadsheetId=SPREADSHEET_ID,
+                range=RANGE,
+                valueInputOption="RAW",
+                body=body
+            ).execute()
+            st.sidebar.success(f"✅ Sheet replaced with {len(upload_df)} rows")
+        else:  # Append
+            sheets_api.spreadsheets().values().append(
+                spreadsheetId=SPREADSHEET_ID,
+                range=RANGE,
+                valueInputOption="RAW",
+                insertDataOption="INSERT_ROWS",
+                body={"values": upload_df.values.tolist()}
+            ).execute()
+            st.sidebar.success(f"✅ {len(upload_df)} rows appended successfully")
+
 # Status Count + KPI Cards
 if not filtered_df.empty:
     status_counts = filtered_df['Status'].value_counts()
@@ -204,4 +204,5 @@ if not filtered_df.empty:
 
 else:
     st.warning("⚠️ No data found for the selected filters.")
+
 
