@@ -5,7 +5,7 @@ from googleapiclient.discovery import build
 
 # ---------------------- CONFIG ---------------------- #
 SPREADSHEET_ID = "16dyupQvFCgPxCez-zKj3mgl62tIH2jR2sYahYS7D8U8"
-RANGE = "rfq_2025!A:Z"  # Correct sheet range
+RANGE = "rfq_2025.csv"  # Correct sheet range
 
 # ---------------------- GOOGLE CONNECTION ---------------------- #
 @st.cache_resource
@@ -74,3 +74,4 @@ if uploaded_file is not None:
         ).execute()
 
         st.success("Data uploaded successfully!")
+
