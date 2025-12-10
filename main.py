@@ -11,7 +11,7 @@ st.title("Google Sheets RFQ Data Editor")
 @st.cache_resource
 def connect_to_google():
     creds = service_account.Credentials.from_service_account_info(
-        st.secrets["gcp_service_account"],
+        st.secrets["google_service_account"],
         scopes=[
             "https://www.googleapis.com/auth/drive",
             "https://www.googleapis.com/auth/spreadsheets"
@@ -70,4 +70,5 @@ if uploaded:
 
         st.success("Google Sheet updated successfully!")
         st.balloons()
+
 
