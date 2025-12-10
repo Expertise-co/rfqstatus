@@ -40,6 +40,28 @@ h3, h4 { color: #2c3e50 !important; font-weight: 700 !important; }
 """
 st.markdown(modern_style, unsafe_allow_html=True)
 
+# ---------------------- BUTTON STYLING ---------------------- #
+button_style = """
+<style>
+/* Sidebar buttons */
+section[data-testid="stSidebar"] button {
+    background-color: #4f80ff !important;  /* Blue background */
+    color: white !important;               /* White text */
+    font-weight: 600 !important;
+    border-radius: 6px !important;
+    height: 38px !important;
+}
+
+/* Hover effect */
+section[data-testid="stSidebar"] button:hover {
+    background-color: #3861c9 !important;
+    color: white !important;
+}
+</style>
+"""
+st.markdown(button_style, unsafe_allow_html=True)
+
+
 # -----------------------------------------------------
 # GOOGLE SHEETS CONFIG
 # -----------------------------------------------------
@@ -204,5 +226,6 @@ if not filtered_df.empty:
 
 else:
     st.warning("⚠️ No data found for the selected filters.")
+
 
 
