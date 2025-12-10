@@ -20,7 +20,7 @@ sheets_api = build("sheets", "v4", credentials=creds)
 drive_api = build("drive", "v3", credentials=creds)
 
 SPREADSHEET_ID = "16dyupQvFCgPxCez-zKj3mgl62tIH2jR2sYahYS7D8U8"
-RANGE = "Sheet1!A1:Z"   # FIXED RANGE (no A:Z error)
+RANGE = "rfq_2025!A1:Z"   # FIXED RANGE (no A:Z error)
 
 # ---------------------- LOAD DATA ---------------------- #
 @st.cache_data
@@ -49,3 +49,4 @@ df = load_sheet()
 
 st.subheader("Loaded Data")
 st.dataframe(df)
+
