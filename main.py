@@ -5,7 +5,7 @@ from googleapiclient.discovery import build
 
 # ---------------------- CONFIG ---------------------- #
 SPREADSHEET_ID = "16dyupQvFCgPxCez-zKj3mgl62tIH2jR2sYahYS7D8U8"
-RANGE = "rfq_2025"   # ✅ Correct sheet name
+RANGE = "rfq_2025!A1:Z10000"   # ✅ Correct sheet name
 
 # ---------------------- GOOGLE CONNECTION ---------------------- #
 @st.cache_resource
@@ -47,4 +47,5 @@ df = load_sheet()
 
 st.subheader("Loaded Data")
 st.dataframe(df)
+
 
