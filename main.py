@@ -44,7 +44,7 @@ st.markdown(modern_style, unsafe_allow_html=True)
 # GOOGLE SHEETS CONFIG
 # -----------------------------------------------------
 SPREADSHEET_ID = "16dyupQvFCgPxCez-zKj3mgl62tIH2jR2sYahYS7D8U8"
-RANGE = "rfq_2025!A:Z"  # Full range
+RANGE = "rfq_2025.csv"  # Full range
 
 # ---------------------- GOOGLE CONNECTION ---------------------- #
 @st.cache_resource
@@ -204,3 +204,4 @@ if not filtered_df.empty:
 
 else:
     st.warning("⚠️ No data found for the selected filters.")
+
