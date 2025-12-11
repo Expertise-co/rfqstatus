@@ -145,7 +145,7 @@ if not filtered_df.empty:
     with col1:
         st.markdown(f'<div class="kpi-card"><div class="kpi-title">Total RFQs</div><div class="kpi-value">{total_rfqs}</div></div>', unsafe_allow_html=True)
     with col2:
-        st.markdown(f'<div class="kpi-card"><div class="kpi-title">Conversion Ratio</div><div class="kpi-value">{conversion_ratio:.2f}%</div></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="kpi-card"><div class="kpi-title">Awarded Ratio</div><div class="kpi-value">{awarded_ratio:.2f}%</div></div>', unsafe_allow_html=True)
     with col3:
         st.markdown(f'<div class="kpi-card"><div class="kpi-title">Declined Ratio</div><div class="kpi-value">{declined_ratio:.2f}%</div></div>', unsafe_allow_html=True)
 
@@ -168,5 +168,6 @@ if not filtered_df.empty:
 
 else:
     st.warning("⚠️ No data found for the selected filters.")
+
 
 
