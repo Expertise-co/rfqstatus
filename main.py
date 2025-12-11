@@ -15,7 +15,7 @@ st.set_page_config(layout="wide")
 modern_style = """
 <style>
 MainMenu {visibility: hidden;}
-#header {visibility: hidden;}
+header {visibility: hidden;}
 footer {visibility: hidden;}
 :root { color-scheme: light !important; }
 html, body, [data-testid="stAppViewContainer"], [data-testid="stSidebar"] {
@@ -168,6 +168,7 @@ if not filtered_df.empty:
 
 else:
     st.warning("⚠️ No data found for the selected filters.")
+
 
 
 
