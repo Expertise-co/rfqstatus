@@ -166,8 +166,34 @@ if not filtered_df.empty:
     monthly_counts = trend_df.groupby("Month").size()
     st.line_chart(monthly_counts)
 
+        # ---------------------------
+    # Client–Affiliate RFQ Count Table
+    # ---------------------------
+    st.subheader("📋 RFQs Received by Client & Affiliate")
+
+    client_affiliate_df = (
+        filtered_df
+        .groupby(['Clients', 'Affiliate'])
+        .size()
+        .reset_index(name='RFQ Count')
+        .sort_values('RFQ Count', ascending=False)
+    )
+
+    if not client_affiliate_df.empty:
+        st.dataframe(
+            client_affiliate_df,
+            use_container_width=True,
+            hide_index=True
+        )
+
+        # Optional total RFQ count display
+        
+    else:
+        st.info("No RFQs found for the selected Client/Affiliate filters.")
+        
 else:
     st.warning("⚠️ No data found for the selected filters.")
+
 
 
 
