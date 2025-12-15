@@ -13,10 +13,6 @@ st.set_page_config(layout="wide")
 # Load passwords from Streamlit Secrets
 # -----------------------------------------------------
 
-st.write("Secrets keys seen by app:", list(st.secrets.keys()))
-st.stop()
-
-
 GLOBAL_PASSWORD = st.secrets["GLOBAL_PASSWORD"]
 DIVISION_PASSWORDS = dict(st.secrets["DIVISION_PASSWORDS"])
 
@@ -394,6 +390,7 @@ if not filtered_df.empty:
         
 else:
     st.warning("⚠️ No data found for the selected filters.")
+
 
 
 
