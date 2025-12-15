@@ -330,11 +330,6 @@ if st.session_state.get("user_division") is None:
                 ).execute()
                 st.sidebar.success(f"✅ {len(upload_df)} rows appended successfully")
 
-else:
-    # Optional: show info for division users
-    st.sidebar.markdown("---")
-    st.sidebar.info("🔒 Upload access is restricted to Global Admin users.")
-
 
 # Status Count + KPI Cards
 if not filtered_df.empty:
@@ -406,6 +401,7 @@ if not filtered_df.empty:
         
 else:
     st.warning("⚠️ No data found for the selected filters.")
+
 
 
 
