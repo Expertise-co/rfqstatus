@@ -122,7 +122,7 @@ if selected_affiliate != "All":
 
 # ---------------------- SIDEBAR: UPLOAD ---------------------- #
 
-""" st.sidebar.header("📤 Upload Options")
+st.sidebar.header("📤 Upload Options")
 
 uploaded_file = st.sidebar.file_uploader("Upload CSV to Google Sheets", type="csv")
 
@@ -158,7 +158,7 @@ if uploaded_file:
                 insertDataOption="INSERT_ROWS",
                 body={"values": upload_df.values.tolist()}
             ).execute()
-            st.sidebar.success(f"✅ {len(upload_df)} rows appended successfully") """
+            st.sidebar.success(f"✅ {len(upload_df)} rows appended successfully")
 
 # Status Count + KPI Cards
 if not filtered_df.empty:
@@ -230,6 +230,7 @@ if not filtered_df.empty:
         
 else:
     st.warning("⚠️ No data found for the selected filters.")
+
 
 
 
