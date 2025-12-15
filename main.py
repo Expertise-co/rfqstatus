@@ -40,6 +40,51 @@ h3, h4 { color: #2c3e50 !important; font-weight: 700 !important; }
 """
 st.markdown(modern_style, unsafe_allow_html=True)
 
+st.markdown("""
+<style>
+/* ---------- Sidebar Upload Section Fix ---------- */
+
+/* File uploader label */
+section[data-testid="stSidebar"] label {
+    color: #2c3e50 !important;
+    font-weight: 600;
+}
+
+/* File uploader drop area */
+section[data-testid="stSidebar"] [data-testid="stFileUploaderDropzone"] {
+    background-color: #ffffff !important;
+    color: #2c3e50 !important;
+    border: 2px dashed #4b7bec !important;
+    border-radius: 10px !important;
+}
+
+/* File uploader text */
+section[data-testid="stSidebar"] [data-testid="stFileUploaderDropzone"] * {
+    color: #2c3e50 !important;
+}
+
+/* Sidebar dataframe preview */
+section[data-testid="stSidebar"] [data-testid="stDataFrame"] {
+    background-color: #ffffff !important;
+    color: #2c3e50 !important;
+}
+
+/* Radio buttons */
+section[data-testid="stSidebar"] div[role="radiogroup"] label {
+    color: #2c3e50 !important;
+}
+
+/* Confirm upload button */
+section[data-testid="stSidebar"] button[kind="primary"] {
+    background-color: #4b7bec !important;
+    color: #ffffff !important;
+    font-weight: 600;
+    border-radius: 8px;
+}
+</style>
+""", unsafe_allow_html=True)
+
+
 # -----------------------------------------------------
 # GOOGLE SHEETS CONFIG
 # -----------------------------------------------------
@@ -230,6 +275,7 @@ if not filtered_df.empty:
         
 else:
     st.warning("⚠️ No data found for the selected filters.")
+
 
 
 
