@@ -77,7 +77,7 @@ section[data-testid="stSidebar"] div[role="radiogroup"] label {
 /* Confirm upload button */
 section[data-testid="stSidebar"] button[kind="primary"] {
     background-color: #4b7bec !important;
-    color: #ffffff !important;
+    color: #4b7bec !important;
     font-weight: 600;
     border-radius: 8px;
 }
@@ -275,6 +275,7 @@ if not filtered_df.empty:
         
 else:
     st.warning("⚠️ No data found for the selected filters.")
+
 
 
 
