@@ -10,6 +10,19 @@ from googleapiclient.discovery import build
 st.set_page_config(layout="wide")
 
 # -----------------------------------------------------
+# Load passwords from Streamlit Secrets
+# -----------------------------------------------------
+
+GLOBAL_PASSWORD = st.secrets["GLOBAL_PASSWORD"]
+DIVISION_PASSWORDS = dict(st.secrets["DIVISION_PASSWORDS"])
+
+if "authenticated" not in st.session_state:
+    st.session_state.authenticated = False
+
+if "user_division" not in st.session_state:
+    st.session_state.user_division = None
+
+# -----------------------------------------------------
 # Modern UI Styling + Gradient Sidebar + KPI Cards
 # -----------------------------------------------------
 modern_style = """
@@ -39,6 +52,28 @@ h3, h4 { color: #2c3e50 !important; font-weight: 700 !important; }
 </style>
 """
 st.markdown(modern_style, unsafe_allow_html=True)
+
+st.markdown("""
+<style>
+/* Sidebar login input text */
+section[data-testid="stSidebar"] input {
+    color: #000000 !important;
+    background-color: #ffffff !important;
+}
+
+/* Sidebar login button text */
+section[data-testid="stSidebar"] button {
+    color: #000000 !important;
+    background-color: #2196F3 !important;
+    font-weight: 600;
+}
+
+/* Button hover (optional) */
+section[data-testid="stSidebar"] button:hover {
+    background-color: #1976D2 !important;
+}
+</style>
+""", unsafe_allow_html=True)
 
 st.markdown("""
 <style>
@@ -134,9 +169,39 @@ df['Date'] = pd.to_datetime(df['Date'], errors='coerce')
 st.title("📊 RFQ Status Dashboard")
 st.sidebar.header("🔎 Filter Options")
 
-# Multi-select Division
-division_list = sorted(df['Division'].dropna().unique())
-selected_divisions = st.sidebar.multiselect("Select Division(s)", options=division_list, default=division_list)
+# --------------------------------------------------------
+# 🔵 DIVISION FILTER (Restricted)
+# --------------------------------------------------------
+
+if st.session_state.user_division:
+    selected_divisions = [st.session_state.user_division]
+    st.sidebar.markdown(
+        f"""
+        <div style="
+            background-color: #2196F3;
+            color: #ff0022;
+            padding: 10px 12px;
+            border-radius: 8px;
+            font-weight: 700;
+            margin-top: 8px;
+            border-left: 5px solid #4b7bec;
+        ">
+            🔒 Division Locked<br>
+            <span style="font-size: 14px;">{st.session_state.user_division}</span>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+else:
+    # Global user → full access
+    division_list = sorted(df['Division'].dropna().unique())
+
+    selected_divisions = st.sidebar.multiselect(
+        "Select Division(s)",
+        options=division_list,
+        default=division_list
+    )
 
 # Client Dropdown
 if selected_divisions:
@@ -155,6 +220,55 @@ else:
     )
 affiliate_list = ["All"] + filtered_affiliates
 selected_affiliate = st.sidebar.selectbox("Select Affiliate", affiliate_list)
+
+# -----------------------------------------------------
+# Sidebar Login
+# -----------------------------------------------------
+if not st.session_state.authenticated:
+    st.sidebar.title("🔐 Login")
+
+    password_input = st.sidebar.text_input(
+        "Enter Password",
+        type="password"
+    )
+
+    login_btn = st.sidebar.button("Login")
+
+    if login_btn:
+        if password_input == GLOBAL_PASSWORD:
+            st.session_state.authenticated = True
+            st.session_state.user_division = None  # Global user
+            st.sidebar.success("Global login successful ✅")
+            st.rerun()
+
+        elif password_input in DIVISION_PASSWORDS.values():
+            division = [
+                d for d, p in DIVISION_PASSWORDS.items()
+                if p == password_input
+            ][0]
+
+            st.session_state.authenticated = True
+            st.session_state.user_division = division
+            st.sidebar.success(f"{division} login successful ✅")
+            st.rerun()
+
+        else:
+            st.sidebar.error("Incorrect password ❌")
+
+    st.stop()
+
+
+#st.sidebar.success("Logged in")
+
+
+# -----------------------------------------------------
+# Logout Option
+# -----------------------------------------------------
+if st.sidebar.button("🚪 Logout"):
+    st.session_state.authenticated = False
+    st.session_state.user_division = None
+    st.rerun()
+
 
 # Final Filtering
 filtered_df = df.copy()
@@ -275,6 +389,7 @@ if not filtered_df.empty:
         
 else:
     st.warning("⚠️ No data found for the selected filters.")
+
 
 
 
