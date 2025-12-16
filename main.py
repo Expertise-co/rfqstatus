@@ -121,6 +121,14 @@ section[data-testid="stSidebar"] button[kind="primary"] {
 </style>
 """, unsafe_allow_html=True)
 
+st.markdown("""
+<style>
+/* Hide sidebar collapse / expand button */
+button[data-testid="collapsedControl"] {
+    display: none !important;
+}
+</style>
+""", unsafe_allow_html=True)
 
 # -----------------------------------------------------
 # GOOGLE SHEETS CONFIG
@@ -285,7 +293,6 @@ if st.sidebar.button("🚪 Logout"):
     st.session_state.user_division = None
     st.rerun()
 
-
 # Final Filtering
 filtered_df = df.copy()
 if selected_divisions:
@@ -296,7 +303,6 @@ if selected_affiliate != "All":
     filtered_df = filtered_df[filtered_df['Affiliate'] == selected_affiliate]
 
 # ---------------------- SIDEBAR: UPLOAD ---------------------- #
-
 if st.session_state.get("user_division") is None:
 
     st.sidebar.markdown("---")
@@ -412,9 +418,3 @@ if not filtered_df.empty:
         st.info("No RFQs found for the selected Client/Affiliate filters.")       
 else:
     st.warning("⚠️ No data found for the selected filters.")
-
-
-
-
-
-
