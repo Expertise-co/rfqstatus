@@ -143,7 +143,7 @@ def connect_to_google():
     return creds
 
 # ---------------------- LOAD SHEET ---------------------- #
-@st.cache_data()
+@st.cache_data
 def load_sheet():
     creds = connect_to_google()
     sheets_api = build("sheets", "v4", credentials=creds)
@@ -159,7 +159,7 @@ def load_sheet():
 
     return pd.DataFrame(values[1:], columns=values[0])
 
-@st.cache_data(ttl=60)
+@st.cache_data
 def get_csv_last_modified_time():
     creds = connect_to_google()
     drive_service = build("drive", "v3", credentials=creds)
@@ -195,7 +195,8 @@ except Exception:
     st.sidebar.warning("📅 Last Upload:\nNot available")
 
 if st.sidebar.button("🔄 Refresh Data"):
-    st.cache_data.clear()
+    load_sheet.clear()
+    get_csv_last_modified_time.clear()
     st.rerun()
 
 # -----------------------------------------------------
@@ -352,9 +353,6 @@ if st.session_state.get("user_division") is None:
                 ).execute()
                 st.sidebar.success(f"✅ {len(upload_df)} rows appended successfully")
 
-            st.session_state.force_refresh = True
-            st.rerun()
-
 # Status Count + KPI Cards
 if not filtered_df.empty:
     status_counts = filtered_df['Status'].value_counts()
@@ -422,6 +420,7 @@ if not filtered_df.empty:
 else:
     st.warning("⚠️ No data found for the selected filters.")
     
+
 
 
 
