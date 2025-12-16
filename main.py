@@ -123,6 +123,34 @@ section[data-testid="stSidebar"] button[kind="primary"] {
 </style>
 """, unsafe_allow_html=True)
 
+st.markdown("""
+<style>
+/* 🔥 Completely remove the | caret line in select & multiselect */
+div[data-baseweb="select"] input {
+    caret-color: transparent !important;
+    color: transparent !important;
+    text-shadow: none !important;
+}
+
+/* Prevent the fake input from showing selection line */
+div[data-baseweb="select"] input::selection {
+    background: transparent !important;
+}
+
+/* Remove focus outline & internal highlight */
+div[data-baseweb="select"] input:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+/* Ensure selected values still visible */
+div[data-baseweb="select"] span {
+    color: white !important;
+}
+</style>
+""", unsafe_allow_html=True)
+
+
 # -----------------------------------------------------
 # DASHBOARD UI
 # -----------------------------------------------------
@@ -420,25 +448,3 @@ if not filtered_df.empty:
 else:
     st.warning("⚠️ No data found for the selected filters.")
     
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
