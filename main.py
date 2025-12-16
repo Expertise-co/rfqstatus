@@ -150,6 +150,34 @@ div[data-baseweb="select"] span {
 </style>
 """, unsafe_allow_html=True)
 
+st.markdown("""
+<style>
+/* 🔥 Completely collapse BaseWeb editable input (the | line source) */
+div[data-baseweb="select"] [contenteditable="true"] {
+    width: 0px !important;
+    min-width: 0px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    caret-color: transparent !important;
+    color: transparent !important;
+    overflow: hidden !important;
+    white-space: nowrap !important;
+}
+
+/* Prevent focus artifacts */
+div[data-baseweb="select"] [contenteditable="true"]:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+/* Ensure selected text/chips remain visible */
+div[data-baseweb="select"] span {
+    color: white !important;
+}
+</style>
+""", unsafe_allow_html=True)
+
+
 
 
 # -----------------------------------------------------
@@ -449,4 +477,5 @@ if not filtered_df.empty:
 else:
     st.warning("⚠️ No data found for the selected filters.")
     
+
 
