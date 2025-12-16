@@ -154,6 +154,21 @@ def load_sheet():
     df = pd.DataFrame(values[1:], columns=values[0])
     return df
 
+@st.cache_data(ttl=60)
+def get_last_upload_time():
+    creds = connect_to_google()
+    sheets_api = build("sheets", "v4", credentials=creds)
+
+    result = sheets_api.spreadsheets().values().get(
+        spreadsheetId=SPREADSHEET_ID,
+        range="Z1"
+    ).execute()
+
+    values = result.get("values", [])
+    if values and len(values[0]) > 1:
+        return values[0][1]
+    return "Not available"
+
 # -----------------------------------------------------
 # Load Data from Google Sheets
 # -----------------------------------------------------
@@ -168,6 +183,25 @@ df['Date'] = pd.to_datetime(df['Date'], errors='coerce')
 # DASHBOARD UI
 # -----------------------------------------------------
 st.title("📊 RFQ Status Dashboard")
+last_upload = get_last_upload_time()
+
+st.markdown(
+    f"""
+    <div style="
+        background:#eef3ff;
+        padding:10px 14px;
+        border-radius:10px;
+        margin-bottom:15px;
+        font-weight:600;
+        color:#2c3e50;
+        border-left:5px solid #4b7bec;
+    ">
+        📅 Last CSV Upload: <b>{last_upload}</b>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+
 st.sidebar.header("🔎 Filter Options")
 
 # --------------------------------------------------------
@@ -295,7 +329,6 @@ if st.session_state.get("user_division") is None:
         type="csv"
     )
 
-    upload_action = None
     if uploaded_file:
         upload_df = pd.read_csv(uploaded_file)
         st.sidebar.subheader("Preview of Uploaded CSV")
@@ -307,11 +340,18 @@ if st.session_state.get("user_division") is None:
         )
 
         if st.sidebar.button("Confirm Upload"):
+            from datetime import datetime
+            from googleapiclient.discovery import build
+
             creds = connect_to_google()
             sheets_api = build("sheets", "v4", credentials=creds)
+
             values = [upload_df.columns.tolist()] + upload_df.values.tolist()
             body = {"values": values}
 
+            # ----------------------------
+            # REPLACE SHEET
+            # ----------------------------
             if upload_action == "Replace Sheet":
                 sheets_api.spreadsheets().values().update(
                     spreadsheetId=SPREADSHEET_ID,
@@ -319,7 +359,21 @@ if st.session_state.get("user_division") is None:
                     valueInputOption="RAW",
                     body=body
                 ).execute()
+
+                # ✅ Timestamp AFTER successful replace
+                upload_time = datetime.now().strftime("%d-%b-%Y %I:%M %p")
+                sheets_api.spreadsheets().values().update(
+                    spreadsheetId=SPREADSHEET_ID,
+                    range="Z1",
+                    valueInputOption="RAW",
+                    body={"values": [["Last Upload:", upload_time]]}
+                ).execute()
+
                 st.sidebar.success(f"✅ Sheet replaced with {len(upload_df)} rows")
+
+            # ----------------------------
+            # APPEND TO SHEET
+            # ----------------------------
             else:
                 sheets_api.spreadsheets().values().append(
                     spreadsheetId=SPREADSHEET_ID,
@@ -328,6 +382,16 @@ if st.session_state.get("user_division") is None:
                     insertDataOption="INSERT_ROWS",
                     body={"values": upload_df.values.tolist()}
                 ).execute()
+
+                # ✅ Timestamp AFTER successful append
+                upload_time = datetime.now().strftime("%d-%b-%Y %I:%M %p")
+                sheets_api.spreadsheets().values().update(
+                    spreadsheetId=SPREADSHEET_ID,
+                    range="Z1",
+                    valueInputOption="RAW",
+                    body={"values": [["Last Upload:", upload_time]]}
+                ).execute()
+
                 st.sidebar.success(f"✅ {len(upload_df)} rows appended successfully")
 
 
@@ -401,6 +465,7 @@ if not filtered_df.empty:
         
 else:
     st.warning("⚠️ No data found for the selected filters.")
+
 
 
 
