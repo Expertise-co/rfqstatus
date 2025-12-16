@@ -124,6 +124,11 @@ section[data-testid="stSidebar"] button[kind="primary"] {
 """, unsafe_allow_html=True)
 
 # -----------------------------------------------------
+# DASHBOARD UI
+# -----------------------------------------------------
+st.title("📊 RFQ Status Dashboard")
+
+# -----------------------------------------------------
 # Sidebar Login
 # -----------------------------------------------------
 if not st.session_state.authenticated:
@@ -158,10 +163,6 @@ if not st.session_state.authenticated:
 
 #st.sidebar.success("Logged in")
 
-# -----------------------------------------------------
-# DASHBOARD UI
-# -----------------------------------------------------
-st.title("📊 RFQ Status Dashboard")
 try:
     last_upload = get_csv_last_modified_time()
     st.sidebar.info(f"📅 Last Upload:\n{last_upload}")
@@ -188,7 +189,7 @@ def connect_to_google():
     return creds
 
 # ---------------------- LOAD SHEET ---------------------- #
-@st.cache_data(show_spinner=False)
+@st.cache_data(TTL = 60)
 def load_sheet():
     creds = connect_to_google()
     sheets_api = build("sheets", "v4", credentials=creds)
@@ -420,6 +421,7 @@ if not filtered_df.empty:
 else:
     st.warning("⚠️ No data found for the selected filters.")
     
+
 
 
 
