@@ -142,48 +142,6 @@ def connect_to_google():
     )
     return creds
 
-# ---------------------- LOAD SHEET ---------------------- #
-@st.cache_data
-def load_sheet():
-    creds = connect_to_google()
-    sheets_api = build("sheets", "v4", credentials=creds)
-
-    result = sheets_api.spreadsheets().values().get(
-        spreadsheetId=SPREADSHEET_ID,
-        range=RANGE
-    ).execute()
-
-    values = result.get("values", [])
-    if not values:
-        return pd.DataFrame()
-
-    return pd.DataFrame(values[1:], columns=values[0])
-
-@st.cache_data
-def get_csv_last_modified_time():
-    creds = connect_to_google()
-    drive_service = build("drive", "v3", credentials=creds)
-
-    file = drive_service.files().get(
-        fileId=SPREADSHEET_ID,
-        fields="modifiedTime"
-    ).execute()
-
-    modified_time = file["modifiedTime"]
-    return datetime.fromisoformat(modified_time.replace("Z", "")).strftime(
-        "%d-%b-%Y"
-    )
-
-# -----------------------------------------------------
-# Load Data from Google Sheets
-# -----------------------------------------------------
-df = load_sheet()
-
-df['Division'] = df['Division'].astype(str).str.strip()
-df['Clients'] = df['Clients'].astype(str).str.strip()
-df['Affiliate'] = df['Affiliate'].astype(str).str.strip()
-df['Date'] = pd.to_datetime(df['Date'], errors='coerce')
-
 # -----------------------------------------------------
 # DASHBOARD UI
 # -----------------------------------------------------
@@ -233,6 +191,48 @@ if not st.session_state.authenticated:
     st.stop()
 
 #st.sidebar.success("Logged in")
+
+# ---------------------- LOAD SHEET ---------------------- #
+@st.cache_data
+def load_sheet():
+    creds = connect_to_google()
+    sheets_api = build("sheets", "v4", credentials=creds)
+
+    result = sheets_api.spreadsheets().values().get(
+        spreadsheetId=SPREADSHEET_ID,
+        range=RANGE
+    ).execute()
+
+    values = result.get("values", [])
+    if not values:
+        return pd.DataFrame()
+
+    return pd.DataFrame(values[1:], columns=values[0])
+
+@st.cache_data
+def get_csv_last_modified_time():
+    creds = connect_to_google()
+    drive_service = build("drive", "v3", credentials=creds)
+
+    file = drive_service.files().get(
+        fileId=SPREADSHEET_ID,
+        fields="modifiedTime"
+    ).execute()
+
+    modified_time = file["modifiedTime"]
+    return datetime.fromisoformat(modified_time.replace("Z", "")).strftime(
+        "%d-%b-%Y"
+    )
+
+# -----------------------------------------------------
+# Load Data from Google Sheets
+# -----------------------------------------------------
+df = load_sheet()
+
+df['Division'] = df['Division'].astype(str).str.strip()
+df['Clients'] = df['Clients'].astype(str).str.strip()
+df['Affiliate'] = df['Affiliate'].astype(str).str.strip()
+df['Date'] = pd.to_datetime(df['Date'], errors='coerce')
 
 st.sidebar.header("🔎 Filter Options")
 
@@ -420,6 +420,7 @@ if not filtered_df.empty:
 else:
     st.warning("⚠️ No data found for the selected filters.")
     
+
 
 
 
