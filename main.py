@@ -123,25 +123,6 @@ section[data-testid="stSidebar"] button[kind="primary"] {
 </style>
 """, unsafe_allow_html=True)
 
-
-# -----------------------------------------------------
-# GOOGLE SHEETS CONFIG
-# -----------------------------------------------------
-SPREADSHEET_ID = st.secrets["DRIVE_SHEET_ID"]
-RANGE = "rfq_2025.csv"  # Full range
-
-# ---------------------- GOOGLE CONNECTION ---------------------- #
-#@st.cache_resource
-def connect_to_google():
-    creds = service_account.Credentials.from_service_account_info(
-        st.secrets["gcp_service_account"],
-        scopes=[
-            "https://www.googleapis.com/auth/spreadsheets",
-            "https://www.googleapis.com/auth/drive"
-        ]
-    )
-    return creds
-
 # -----------------------------------------------------
 # DASHBOARD UI
 # -----------------------------------------------------
@@ -186,6 +167,24 @@ if not st.session_state.authenticated:
     st.stop()
 
 #st.sidebar.success("Logged in")
+
+# -----------------------------------------------------
+# GOOGLE SHEETS CONFIG
+# -----------------------------------------------------
+SPREADSHEET_ID = st.secrets["DRIVE_SHEET_ID"]
+RANGE = "rfq_2025.csv"  # Full range
+
+# ---------------------- GOOGLE CONNECTION ---------------------- #
+#@st.cache_resource
+def connect_to_google():
+    creds = service_account.Credentials.from_service_account_info(
+        st.secrets["gcp_service_account"],
+        scopes=[
+            "https://www.googleapis.com/auth/spreadsheets",
+            "https://www.googleapis.com/auth/drive"
+        ]
+    )
+    return creds
 
 # ---------------------- LOAD SHEET ---------------------- #
 #@st.cache_data
@@ -420,6 +419,7 @@ if not filtered_df.empty:
 else:
     st.warning("⚠️ No data found for the selected filters.")
     
+
 
 
 
