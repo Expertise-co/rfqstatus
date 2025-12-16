@@ -124,7 +124,7 @@ section[data-testid="stSidebar"] button[kind="primary"] {
 # -----------------------------------------------------
 # GOOGLE SHEETS CONFIG
 # -----------------------------------------------------
-SPREADSHEET_ID = "16dyupQvFCgPxCez-zKj3mgl62tIH2jR2sYahYS7D8U8"
+SPREADSHEET_ID = st.secrets["DRIVE_SHEET_ID"]
 RANGE = "rfq_2025.csv"  # Full range
 
 # ---------------------- GOOGLE CONNECTION ---------------------- #
@@ -291,7 +291,7 @@ if st.session_state.get("user_division") is None:
     st.sidebar.header("📤 Upload Options")
 
     uploaded_file = st.sidebar.file_uploader(
-        "Upload CSV to Google Sheets",
+        "Upload RFQ file",
         type="csv"
     )
 
@@ -401,6 +401,7 @@ if not filtered_df.empty:
         
 else:
     st.warning("⚠️ No data found for the selected filters.")
+
 
 
 
