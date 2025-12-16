@@ -123,22 +123,23 @@ section[data-testid="stSidebar"] button[kind="primary"] {
 
 st.markdown("""
 <style>
-/* OLD sidebar toggle (keep just in case) */
+/* Hide ONLY the sidebar collapse/expand button */
 button[data-testid="collapsedControl"] {
     display: none !important;
 }
 
-/* NEW top-left sidebar toggle button */
+/* New Streamlit header toggle button */
 button[kind="header"] {
     display: none !important;
 }
 
-/* Extra safety for SVG icon button */
-header button {
+/* Ensure only the toggle icon is hidden, not sidebar */
+header button:not([aria-label]) {
     display: none !important;
 }
 </style>
 """, unsafe_allow_html=True)
+
 
 
 # -----------------------------------------------------
@@ -429,4 +430,5 @@ if not filtered_df.empty:
         st.info("No RFQs found for the selected Client/Affiliate filters.")       
 else:
     st.warning("⚠️ No data found for the selected filters.")
+
 
