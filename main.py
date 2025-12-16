@@ -143,19 +143,21 @@ def connect_to_google():
     return creds
 
 # ---------------------- LOAD SHEET ---------------------- #
-@st.cache_data
+@st.cache_data(ttl=60)  # refresh every 60 seconds
 def load_sheet():
     creds = connect_to_google()
     sheets_api = build("sheets", "v4", credentials=creds)
+
     result = sheets_api.spreadsheets().values().get(
         spreadsheetId=SPREADSHEET_ID,
         range=RANGE
     ).execute()
+
     values = result.get("values", [])
     if not values:
         return pd.DataFrame()
-    df = pd.DataFrame(values[1:], columns=values[0])
-    return df
+
+    return pd.DataFrame(values[1:], columns=values[0])
 
 @st.cache_data(ttl=60)
 def get_csv_last_modified_time():
@@ -346,6 +348,9 @@ if st.session_state.get("user_division") is None:
                     body={"values": upload_df.values.tolist()}
                 ).execute()
                 st.sidebar.success(f"✅ {len(upload_df)} rows appended successfully")
+            # 🔥 THIS FIXES YOUR ISSUE
+            st.cache_data.clear()
+            st.rerun()
 
 # Status Count + KPI Cards
 if not filtered_df.empty:
@@ -414,6 +419,7 @@ if not filtered_df.empty:
 else:
     st.warning("⚠️ No data found for the selected filters.")
     
+
 
 
 
