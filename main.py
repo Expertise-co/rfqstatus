@@ -188,7 +188,7 @@ def connect_to_google():
     return creds
 
 # ---------------------- LOAD SHEET ---------------------- #
-@st.cache_data(ttl=60)
+@st.cache_data(show_spinner=False)
 def load_sheet():
     creds = connect_to_google()
     sheets_api = build("sheets", "v4", credentials=creds)
@@ -420,6 +420,7 @@ if not filtered_df.empty:
 else:
     st.warning("⚠️ No data found for the selected filters.")
     
+
 
 
 
