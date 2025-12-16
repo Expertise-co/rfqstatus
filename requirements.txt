@@ -1,4 +1,4 @@
-streamlit == 1.44.1
+streamlit
 pandas
 altair
 numpy
@@ -8,5 +8,6 @@ google-auth
 google-auth-oauthlib
 google-auth-httplib2
 google-api-python-client
+
 
 
