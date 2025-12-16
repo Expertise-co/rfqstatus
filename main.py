@@ -209,7 +209,7 @@ if st.session_state.user_division:
             margin-top: 8px;
             border-left: 5px solid #4b7bec;
         ">
-            🔒 Division Locked<br>
+            <span style="color: initial;">🔒</span> Division Locked<br>
             <span style="font-size: 14px;">{st.session_state.user_division}</span>
         </div>
         """,
@@ -413,5 +413,6 @@ if not filtered_df.empty:
         st.info("No RFQs found for the selected Client/Affiliate filters.")       
 else:
     st.warning("⚠️ No data found for the selected filters.")
+
 
 
