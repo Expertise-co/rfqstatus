@@ -152,11 +152,6 @@ try:
 except Exception:
     st.sidebar.warning("📅 Last Upload:\nNot available")
 
-if st.sidebar.button("🔄 Refresh Data"):
-    load_sheet.clear()
-    get_csv_last_modified_time.clear()
-    st.rerun()
-
 # -----------------------------------------------------
 # Sidebar Login
 # -----------------------------------------------------
@@ -233,6 +228,11 @@ df['Division'] = df['Division'].astype(str).str.strip()
 df['Clients'] = df['Clients'].astype(str).str.strip()
 df['Affiliate'] = df['Affiliate'].astype(str).str.strip()
 df['Date'] = pd.to_datetime(df['Date'], errors='coerce')
+
+if st.sidebar.button("🔄 Refresh Data"):
+    load_sheet.clear()
+    get_csv_last_modified_time.clear()
+    st.rerun()
 
 st.sidebar.header("🔎 Filter Options")
 
@@ -420,6 +420,7 @@ if not filtered_df.empty:
 else:
     st.warning("⚠️ No data found for the selected filters.")
     
+
 
 
 
