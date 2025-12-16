@@ -161,7 +161,7 @@ def get_last_upload_time():
 
     result = sheets_api.spreadsheets().values().get(
         spreadsheetId=SPREADSHEET_ID,
-        range="Z1"
+        range="Meta!A1:B1"
     ).execute()
 
     values = result.get("values", [])
@@ -364,7 +364,7 @@ if st.session_state.get("user_division") is None:
                 upload_time = datetime.now().strftime("%d-%b-%Y %I:%M %p")
                 sheets_api.spreadsheets().values().update(
                     spreadsheetId=SPREADSHEET_ID,
-                    range="Z1",
+                    range="Meta!A1:B1",
                     valueInputOption="RAW",
                     body={"values": [["Last Upload:", upload_time]]}
                 ).execute()
@@ -387,7 +387,7 @@ if st.session_state.get("user_division") is None:
                 upload_time = datetime.now().strftime("%d-%b-%Y %I:%M %p")
                 sheets_api.spreadsheets().values().update(
                     spreadsheetId=SPREADSHEET_ID,
-                    range="Z1",
+                    range="Meta!A1:B1",
                     valueInputOption="RAW",
                     body={"values": [["Last Upload:", upload_time]]}
                 ).execute()
@@ -465,6 +465,7 @@ if not filtered_df.empty:
         
 else:
     st.warning("⚠️ No data found for the selected filters.")
+
 
 
 
