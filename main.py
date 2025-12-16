@@ -26,14 +26,6 @@ if "authenticated" not in st.session_state:
 if "user_division" not in st.session_state:
     st.session_state.user_division = None
 
-if "force_refresh" not in st.session_state:
-    st.session_state.force_refresh = False
-
-if st.session_state.force_refresh:
-    st.cache_data.clear()
-    st.session_state.force_refresh = False
-
-
 # -----------------------------------------------------
 # Modern UI Styling + Gradient Sidebar + KPI Cards
 # -----------------------------------------------------
@@ -202,6 +194,11 @@ try:
 except Exception:
     st.sidebar.warning("📅 Last Upload:\nNot available")
 
+st.sidebar.markdown("---")
+if st.sidebar.button("🔄 Refresh Data"):
+    st.cache_data.clear()
+    st.rerun()
+
 # -----------------------------------------------------
 # Sidebar Login
 # -----------------------------------------------------
@@ -217,7 +214,6 @@ if not st.session_state.authenticated:
 
     if login_btn:
         if password_input == GLOBAL_PASSWORD:
-            st.session_state.force_refresh = True
             st.session_state.authenticated = True
             st.session_state.user_division = None
             st.rerun()
@@ -228,7 +224,6 @@ if not st.session_state.authenticated:
                 if p == password_input
             ][0]
         
-            st.session_state.force_refresh = True
             st.session_state.authenticated = True
             st.session_state.user_division = division
             st.rerun()
@@ -294,7 +289,6 @@ selected_affiliate = st.sidebar.selectbox("Select Affiliate", affiliate_list)
 
 
 if st.sidebar.button("🚪 Logout"):
-    st.session_state.force_refresh = True
     st.session_state.authenticated = False
     st.session_state.user_division = None
     st.rerun()
@@ -429,6 +423,7 @@ if not filtered_df.empty:
 else:
     st.warning("⚠️ No data found for the selected filters.")
     
+
 
 
 
