@@ -209,14 +209,14 @@ if not st.session_state.authenticated:
 
     if login_btn:
         if password_input == GLOBAL_PASSWORD:
-            st.cache_data.clear()
+            #st.cache_data.clear()
             st.session_state.authenticated = True
             st.session_state.user_division = None
             st.sidebar.success("Global login successful ✅")
             st.rerun()
 
         elif password_input in DIVISION_PASSWORDS.values():
-            st.cache_data.clear()
+            #st.cache_data.clear()
             division = [
                 d for d, p in DIVISION_PASSWORDS.items()
                 if p == password_input
@@ -426,6 +426,7 @@ if not filtered_df.empty:
 else:
     st.warning("⚠️ No data found for the selected filters.")
     
+
 
 
 
