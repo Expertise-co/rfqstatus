@@ -31,8 +31,8 @@ if "user_division" not in st.session_state:
 # -----------------------------------------------------
 modern_style = """
 <style>
-#MainMenu {visibility: hidden;}
-#header {visibility: hidden;}
+MainMenu {visibility: hidden;}
+header {visibility: hidden;}
 footer {visibility: hidden;}
 :root { color-scheme: light !important; }
 html, body, [data-testid="stAppViewContainer"], [data-testid="stSidebar"] {
@@ -413,4 +413,5 @@ if not filtered_df.empty:
 else:
     st.warning("⚠️ No data found for the selected filters.")
     
+
 
