@@ -143,7 +143,7 @@ def connect_to_google():
     return creds
 
 # ---------------------- LOAD SHEET ---------------------- #
-@st.cache_data(ttl=60)  # refresh every 60 seconds
+@st.cache_data(ttl=60)
 def load_sheet():
     creds = connect_to_google()
     sheets_api = build("sheets", "v4", credentials=creds)
@@ -348,9 +348,13 @@ if st.session_state.get("user_division") is None:
                     body={"values": upload_df.values.tolist()}
                 ).execute()
                 st.sidebar.success(f"✅ {len(upload_df)} rows appended successfully")
-            # 🔥 THIS FIXES YOUR ISSUE
-            st.cache_data.clear()
+
+            st.session_state.force_refresh = True
             st.rerun()
+            
+if st.session_state.get("force_refresh"):
+    st.cache_data.clear()
+    st.session_state.force_refresh = False
 
 # Status Count + KPI Cards
 if not filtered_df.empty:
@@ -419,6 +423,7 @@ if not filtered_df.empty:
 else:
     st.warning("⚠️ No data found for the selected filters.")
     
+
 
 
 
