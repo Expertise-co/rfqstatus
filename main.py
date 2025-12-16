@@ -10,8 +10,7 @@ from datetime import datetime
 # -----------------------------------------------------
 st.set_page_config(
     layout="wide",
-    initial_sidebar_state="expanded"
-)
+    initial_sidebar_state="expanded")
 
 # -----------------------------------------------------
 # Load passwords from Streamlit Secrets
@@ -32,8 +31,8 @@ if "user_division" not in st.session_state:
 # -----------------------------------------------------
 modern_style = """
 <style>
-MainMenu {visibility: hidden;}
-header {visibility: hidden;}
+#MainMenu {visibility: hidden;}
+#header {visibility: hidden;}
 footer {visibility: hidden;}
 :root { color-scheme: light !important; }
 html, body, [data-testid="stAppViewContainer"], [data-testid="stSidebar"] {
@@ -414,3 +413,4 @@ if not filtered_df.empty:
 else:
     st.warning("⚠️ No data found for the selected filters.")
     
+
