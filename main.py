@@ -185,24 +185,13 @@ df['Date'] = pd.to_datetime(df['Date'], errors='coerce')
 # DASHBOARD UI
 # -----------------------------------------------------
 st.title("📊 RFQ Status Dashboard")
-last_upload = get_csv_last_modified_time()
+st.sidebar.markdown("### 🕒 Data Info")
 
-st.markdown(
-    f"""
-    <div style="
-        background:#eef3ff;
-        padding:10px 14px;
-        border-radius:10px;
-        margin-bottom:15px;
-        font-weight:600;
-        color:#2c3e50;
-        border-left:5px solid #4b7bec;
-    ">
-        📅 Last CSV Upload: <b>{last_upload}</b>
-    </div>
-    """,
-    unsafe_allow_html=True
-)
+try:
+    last_upload = get_last_upload_time()
+    st.sidebar.info(f"📅 Last CSV Upload:\n{last_upload}")
+except Exception:
+    st.sidebar.warning("📅 Last CSV Upload:\nNot available")
 
 st.sidebar.header("🔎 Filter Options")
 
@@ -445,6 +434,7 @@ if not filtered_df.empty:
         
 else:
     st.warning("⚠️ No data found for the selected filters.")
+
 
 
 
