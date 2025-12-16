@@ -124,16 +124,6 @@ section[data-testid="stSidebar"] button[kind="primary"] {
 """, unsafe_allow_html=True)
 
 # -----------------------------------------------------
-# DASHBOARD UI
-# -----------------------------------------------------
-st.title("📊 RFQ Status Dashboard")
-try:
-    last_upload = get_csv_last_modified_time()
-    st.sidebar.info(f"📅 Last Upload:\n{last_upload}")
-except Exception:
-    st.sidebar.warning("📅 Last Upload:\nNot available")
-
-# -----------------------------------------------------
 # Sidebar Login
 # -----------------------------------------------------
 if not st.session_state.authenticated:
@@ -167,6 +157,17 @@ if not st.session_state.authenticated:
     st.stop()
 
 #st.sidebar.success("Logged in")
+
+# -----------------------------------------------------
+# DASHBOARD UI
+# -----------------------------------------------------
+st.title("📊 RFQ Status Dashboard")
+try:
+    last_upload = get_csv_last_modified_time()
+    st.sidebar.info(f"📅 Last Upload:\n{last_upload}")
+except Exception:
+    st.sidebar.warning("📅 Last Upload:\nNot available")
+
 
 # -----------------------------------------------------
 # GOOGLE SHEETS CONFIG
@@ -419,6 +420,7 @@ if not filtered_df.empty:
 else:
     st.warning("⚠️ No data found for the selected filters.")
     
+
 
 
 
