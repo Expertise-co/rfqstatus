@@ -187,7 +187,7 @@ def connect_to_google():
     return creds
 
 # ---------------------- LOAD SHEET ---------------------- #
-@st.cache_data
+@st.cache_data(ttl=60)
 def load_sheet():
     creds = connect_to_google()
     sheets_api = build("sheets", "v4", credentials=creds)
@@ -231,7 +231,6 @@ df['Date'] = pd.to_datetime(df['Date'], errors='coerce')
 if st.sidebar.button("🔄 Refresh Data"):
     load_sheet.clear()
     get_csv_last_modified_time.clear()
-    st.rerun()
 
 st.sidebar.header("🔎 Filter Options")
 
@@ -288,8 +287,9 @@ selected_affiliate = st.sidebar.selectbox("Select Affiliate", affiliate_list)
 
 
 if st.sidebar.button("🚪 Logout"):
-    st.session_state.authenticated = False
-    st.session_state.user_division = None
+    load_sheet.clear()
+    get_csv_last_modified_time.clear()
+    st.session_state.clear()
     st.rerun()
 
 
@@ -419,6 +419,7 @@ if not filtered_df.empty:
 else:
     st.warning("⚠️ No data found for the selected filters.")
     
+
 
 
 
