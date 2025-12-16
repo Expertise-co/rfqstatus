@@ -123,12 +123,23 @@ section[data-testid="stSidebar"] button[kind="primary"] {
 
 st.markdown("""
 <style>
-/* Hide sidebar collapse / expand button */
+/* OLD sidebar toggle (keep just in case) */
 button[data-testid="collapsedControl"] {
+    display: none !important;
+}
+
+/* NEW top-left sidebar toggle button */
+button[kind="header"] {
+    display: none !important;
+}
+
+/* Extra safety for SVG icon button */
+header button {
     display: none !important;
 }
 </style>
 """, unsafe_allow_html=True)
+
 
 # -----------------------------------------------------
 # GOOGLE SHEETS CONFIG
@@ -418,3 +429,4 @@ if not filtered_df.empty:
         st.info("No RFQs found for the selected Client/Affiliate filters.")       
 else:
     st.warning("⚠️ No data found for the selected filters.")
+
