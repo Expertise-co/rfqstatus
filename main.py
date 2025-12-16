@@ -123,24 +123,26 @@ section[data-testid="stSidebar"] button[kind="primary"] {
 
 st.markdown("""
 <style>
-/* Hide ONLY the sidebar collapse/expand button */
-button[data-testid="collapsedControl"] {
+/* Remove top Streamlit header space completely */
+header[data-testid="stHeader"] {
+    height: 0px !important;
+    min-height: 0px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    visibility: hidden !important;
+}
+
+/* Extra safety: hide any floating toggle button */
+div[data-testid="stToolbar"] {
     display: none !important;
 }
 
-/* New Streamlit header toggle button */
-button[kind="header"] {
-    display: none !important;
-}
-
-/* Ensure only the toggle icon is hidden, not sidebar */
-header button:not([aria-label]) {
-    display: none !important;
+/* Prevent layout shift */
+[data-testid="stAppViewContainer"] {
+    padding-top: 0rem !important;
 }
 </style>
 """, unsafe_allow_html=True)
-
-
 
 # -----------------------------------------------------
 # GOOGLE SHEETS CONFIG
@@ -430,5 +432,6 @@ if not filtered_df.empty:
         st.info("No RFQs found for the selected Client/Affiliate filters.")       
 else:
     st.warning("⚠️ No data found for the selected filters.")
+
 
 
