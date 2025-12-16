@@ -425,7 +425,7 @@ if not filtered_df.empty:
     submitted = filtered_df[filtered_df['Status'].str.lower() == "submitted"].shape[0]
     declined = filtered_df[filtered_df['Status'].str.lower() == "declined"].shape[0]
 
-    awarded_ratio = (awarded / total_rfqs) * 100 if submitted > 0 else 0
+    awarded_ratio = (awarded / total_rfqs) * 100 if total_rfqs > 0 else 0
     declined_ratio = (declined / total_rfqs) * 100 if total_rfqs > 0 else 0
 
     col1, col2, col3 = st.columns(3)
@@ -477,5 +477,6 @@ if not filtered_df.empty:
 else:
     st.warning("⚠️ No data found for the selected filters.")
     
+
 
 
