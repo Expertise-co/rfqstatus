@@ -8,7 +8,10 @@ from datetime import datetime
 # -----------------------------------------------------
 # Make Screen Wide
 # -----------------------------------------------------
-st.set_page_config(layout="wide")
+st.set_page_config(
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
 
 # -----------------------------------------------------
 # Load passwords from Streamlit Secrets
@@ -121,28 +124,6 @@ section[data-testid="stSidebar"] button[kind="primary"] {
 </style>
 """, unsafe_allow_html=True)
 
-st.markdown("""
-<style>
-/* Remove top Streamlit header space completely */
-header[data-testid="stHeader"] {
-    height: 0px !important;
-    min-height: 0px !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    visibility: hidden !important;
-}
-
-/* Extra safety: hide any floating toggle button */
-div[data-testid="stToolbar"] {
-    display: none !important;
-}
-
-/* Prevent layout shift */
-[data-testid="stAppViewContainer"] {
-    padding-top: 0rem !important;
-}
-</style>
-""", unsafe_allow_html=True)
 
 # -----------------------------------------------------
 # GOOGLE SHEETS CONFIG
@@ -432,6 +413,4 @@ if not filtered_df.empty:
         st.info("No RFQs found for the selected Client/Affiliate filters.")       
 else:
     st.warning("⚠️ No data found for the selected filters.")
-
-
-
+    
