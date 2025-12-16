@@ -131,7 +131,7 @@ SPREADSHEET_ID = st.secrets["DRIVE_SHEET_ID"]
 RANGE = "rfq_2025.csv"  # Full range
 
 # ---------------------- GOOGLE CONNECTION ---------------------- #
-@st.cache_resource
+#@st.cache_resource
 def connect_to_google():
     creds = service_account.Credentials.from_service_account_info(
         st.secrets["gcp_service_account"],
@@ -188,7 +188,7 @@ if not st.session_state.authenticated:
 #st.sidebar.success("Logged in")
 
 # ---------------------- LOAD SHEET ---------------------- #
-@st.cache_data
+#@st.cache_data
 def load_sheet():
     creds = connect_to_google()
     sheets_api = build("sheets", "v4", credentials=creds)
@@ -204,7 +204,7 @@ def load_sheet():
 
     return pd.DataFrame(values[1:], columns=values[0])
 
-@st.cache_data
+#@st.cache_data
 def get_csv_last_modified_time():
     creds = connect_to_google()
     drive_service = build("drive", "v3", credentials=creds)
@@ -420,6 +420,7 @@ if not filtered_df.empty:
 else:
     st.warning("⚠️ No data found for the selected filters.")
     
+
 
 
 
