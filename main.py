@@ -188,10 +188,10 @@ st.title("📊 RFQ Status Dashboard")
 st.sidebar.markdown("### 🕒 Data Info")
 
 try:
-    last_upload = get_last_upload_time()
-    st.sidebar.info(f"📅 Last CSV Upload:\n{last_upload}")
+    last_upload = get_csv_last_modified_time()
+    st.sidebar.info(f"📅 Last Upload:\n{last_upload}")
 except Exception:
-    st.sidebar.warning("📅 Last CSV Upload:\nNot available")
+    st.sidebar.warning("📅 Last Upload:\nNot available")
 
 st.sidebar.header("🔎 Filter Options")
 
@@ -434,6 +434,7 @@ if not filtered_df.empty:
         
 else:
     st.warning("⚠️ No data found for the selected filters.")
+
 
 
 
