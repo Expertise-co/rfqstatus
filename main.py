@@ -288,9 +288,10 @@ selected_affiliate = st.sidebar.selectbox("Select Affiliate", affiliate_list)
 
 
 if st.sidebar.button("🚪 Logout"):
-    st.cache_data.clear()
-    st.session_state.authenticated = False
-    st.session_state.user_division = None
+    st.session_state.clear()
+    #st.cache_data.clear()
+    #st.session_state.authenticated = False
+    #st.session_state.user_division = None
     st.rerun()
 
 # Final Filtering
@@ -426,6 +427,7 @@ if not filtered_df.empty:
 else:
     st.warning("⚠️ No data found for the selected filters.")
     
+
 
 
 
