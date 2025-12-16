@@ -292,6 +292,13 @@ if st.sidebar.button("🚪 Logout"):
     st.session_state.user_division = None
     st.rerun()
 
+if st.sidebar.button("🚪 Logout"):
+    st.cache_data.clear()
+    st.session_state.authenticated = False
+    st.session_state.user_division = None
+    st.rerun()
+
+
 # Final Filtering
 filtered_df = df.copy()
 if selected_divisions:
@@ -425,6 +432,7 @@ if not filtered_df.empty:
 else:
     st.warning("⚠️ No data found for the selected filters.")
     
+
 
 
 
