@@ -167,9 +167,8 @@ def get_csv_last_modified_time():
 
     modified_time = file["modifiedTime"]
     return datetime.fromisoformat(modified_time.replace("Z", "")).strftime(
-        "%d-%b-%Y %I:%M %p"
+        "%d-%b-%Y"
     )
-
 
 # -----------------------------------------------------
 # Load Data from Google Sheets
@@ -185,8 +184,6 @@ df['Date'] = pd.to_datetime(df['Date'], errors='coerce')
 # DASHBOARD UI
 # -----------------------------------------------------
 st.title("📊 RFQ Status Dashboard")
-st.sidebar.markdown("### 🕒 Data Info")
-
 try:
     last_upload = get_csv_last_modified_time()
     st.sidebar.info(f"📅 Last Upload:\n{last_upload}")
@@ -277,19 +274,13 @@ if not st.session_state.authenticated:
             st.session_state.user_division = division
             st.sidebar.success(f"{division} login successful ✅")
             st.rerun()
-
         else:
             st.sidebar.error("Incorrect password ❌")
 
     st.stop()
 
-
 #st.sidebar.success("Logged in")
 
-
-# -----------------------------------------------------
-# Logout Option
-# -----------------------------------------------------
 if st.sidebar.button("🚪 Logout"):
     st.session_state.authenticated = False
     st.session_state.user_division = None
@@ -307,9 +298,6 @@ if selected_affiliate != "All":
 
 # ---------------------- SIDEBAR: UPLOAD ---------------------- #
 
-# -----------------------------------------------------
-# Upload Option – GLOBAL USERS ONLY
-# -----------------------------------------------------
 if st.session_state.get("user_division") is None:
 
     st.sidebar.markdown("---")
@@ -338,9 +326,7 @@ if st.session_state.get("user_division") is None:
             values = [upload_df.columns.tolist()] + upload_df.values.tolist()
             body = {"values": values}
 
-            # ----------------------------
             # REPLACE SHEET
-            # ----------------------------
             if upload_action == "Replace Sheet":
                 sheets_api.spreadsheets().values().update(
                     spreadsheetId=SPREADSHEET_ID,
@@ -350,9 +336,7 @@ if st.session_state.get("user_division") is None:
                 ).execute()
                 st.sidebar.success(f"✅ Sheet replaced with {len(upload_df)} rows")
 
-            # ----------------------------
             # APPEND TO SHEET
-            # ----------------------------
             else:
                 sheets_api.spreadsheets().values().append(
                     spreadsheetId=SPREADSHEET_ID,
@@ -362,7 +346,6 @@ if st.session_state.get("user_division") is None:
                     body={"values": upload_df.values.tolist()}
                 ).execute()
                 st.sidebar.success(f"✅ {len(upload_df)} rows appended successfully")
-
 
 # Status Count + KPI Cards
 if not filtered_df.empty:
@@ -425,34 +408,10 @@ if not filtered_df.empty:
             client_affiliate_df,
             use_container_width=True,
             hide_index=True
-        )
-
-        # Optional total RFQ count display
-        
+        )  
     else:
-        st.info("No RFQs found for the selected Client/Affiliate filters.")
-        
+        st.info("No RFQs found for the selected Client/Affiliate filters.")       
 else:
     st.warning("⚠️ No data found for the selected filters.")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
