@@ -194,7 +194,6 @@ try:
 except Exception:
     st.sidebar.warning("📅 Last Upload:\nNot available")
 
-st.sidebar.markdown("---")
 if st.sidebar.button("🔄 Refresh Data"):
     st.cache_data.clear()
     st.rerun()
@@ -423,6 +422,7 @@ if not filtered_df.empty:
 else:
     st.warning("⚠️ No data found for the selected filters.")
     
+
 
 
 
