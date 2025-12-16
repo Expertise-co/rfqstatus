@@ -3,6 +3,7 @@ import pandas as pd
 import altair as alt
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
+from datetime import datetime
 
 # -----------------------------------------------------
 # Make Screen Wide
@@ -155,19 +156,20 @@ def load_sheet():
     return df
 
 @st.cache_data(ttl=60)
-def get_last_upload_time():
+def get_csv_last_modified_time():
     creds = connect_to_google()
-    sheets_api = build("sheets", "v4", credentials=creds)
+    drive_service = build("drive", "v3", credentials=creds)
 
-    result = sheets_api.spreadsheets().values().get(
-        spreadsheetId=SPREADSHEET_ID,
-        range="Meta!A1:B1"
+    file = drive_service.files().get(
+        fileId=SPREADSHEET_ID,
+        fields="modifiedTime"
     ).execute()
 
-    values = result.get("values", [])
-    if values and len(values[0]) > 1:
-        return values[0][1]
-    return "Not available"
+    modified_time = file["modifiedTime"]
+    return datetime.fromisoformat(modified_time.replace("Z", "")).strftime(
+        "%d-%b-%Y %I:%M %p"
+    )
+
 
 # -----------------------------------------------------
 # Load Data from Google Sheets
@@ -183,7 +185,7 @@ df['Date'] = pd.to_datetime(df['Date'], errors='coerce')
 # DASHBOARD UI
 # -----------------------------------------------------
 st.title("📊 RFQ Status Dashboard")
-last_upload = get_last_upload_time()
+last_upload = get_csv_last_modified_time()
 
 st.markdown(
     f"""
@@ -340,8 +342,6 @@ if st.session_state.get("user_division") is None:
         )
 
         if st.sidebar.button("Confirm Upload"):
-            from datetime import datetime
-            from googleapiclient.discovery import build
 
             creds = connect_to_google()
             sheets_api = build("sheets", "v4", credentials=creds)
@@ -359,16 +359,6 @@ if st.session_state.get("user_division") is None:
                     valueInputOption="RAW",
                     body=body
                 ).execute()
-
-                # ✅ Timestamp AFTER successful replace
-                upload_time = datetime.now().strftime("%d-%b-%Y %I:%M %p")
-                sheets_api.spreadsheets().values().update(
-                    spreadsheetId=SPREADSHEET_ID,
-                    range="Meta!A1:B1",
-                    valueInputOption="RAW",
-                    body={"values": [["Last Upload:", upload_time]]}
-                ).execute()
-
                 st.sidebar.success(f"✅ Sheet replaced with {len(upload_df)} rows")
 
             # ----------------------------
@@ -382,16 +372,6 @@ if st.session_state.get("user_division") is None:
                     insertDataOption="INSERT_ROWS",
                     body={"values": upload_df.values.tolist()}
                 ).execute()
-
-                # ✅ Timestamp AFTER successful append
-                upload_time = datetime.now().strftime("%d-%b-%Y %I:%M %p")
-                sheets_api.spreadsheets().values().update(
-                    spreadsheetId=SPREADSHEET_ID,
-                    range="Meta!A1:B1",
-                    valueInputOption="RAW",
-                    body={"values": [["Last Upload:", upload_time]]}
-                ).execute()
-
                 st.sidebar.success(f"✅ {len(upload_df)} rows appended successfully")
 
 
@@ -465,6 +445,7 @@ if not filtered_df.empty:
         
 else:
     st.warning("⚠️ No data found for the selected filters.")
+
 
 
 
