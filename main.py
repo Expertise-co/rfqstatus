@@ -163,13 +163,6 @@ if not st.session_state.authenticated:
 
 #st.sidebar.success("Logged in")
 
-try:
-    last_upload = get_csv_last_modified_time()
-    st.sidebar.info(f"📅 Last Upload:\n{last_upload}")
-except Exception:
-    st.sidebar.warning("📅 Last Upload:\nNot available")
-
-
 # -----------------------------------------------------
 # GOOGLE SHEETS CONFIG
 # -----------------------------------------------------
@@ -219,6 +212,12 @@ def get_csv_last_modified_time():
     return datetime.fromisoformat(modified_time.replace("Z", "")).strftime(
         "%d-%b-%Y"
     )
+
+try:
+    last_upload = get_csv_last_modified_time()
+    st.sidebar.info(f"📅 Last Upload:\n{last_upload}")
+except Exception:
+    st.sidebar.warning("📅 Last Upload:\nNot available")
 
 # -----------------------------------------------------
 # Load Data from Google Sheets
@@ -421,6 +420,7 @@ if not filtered_df.empty:
 else:
     st.warning("⚠️ No data found for the selected filters.")
     
+
 
 
 
