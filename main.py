@@ -192,6 +192,43 @@ try:
 except Exception:
     st.sidebar.warning("📅 Last Upload:\nNot available")
 
+# -----------------------------------------------------
+# Sidebar Login
+# -----------------------------------------------------
+if not st.session_state.authenticated:
+    st.sidebar.title("🔐 Login")
+
+    password_input = st.sidebar.text_input(
+        "Enter Password",
+        type="password"
+    )
+
+    login_btn = st.sidebar.button("Login")
+
+    if login_btn:
+        if password_input == GLOBAL_PASSWORD:
+            st.session_state.authenticated = True
+            st.session_state.user_division = None  # Global user
+            st.sidebar.success("Global login successful ✅")
+            st.rerun()
+
+        elif password_input in DIVISION_PASSWORDS.values():
+            division = [
+                d for d, p in DIVISION_PASSWORDS.items()
+                if p == password_input
+            ][0]
+
+            st.session_state.authenticated = True
+            st.session_state.user_division = division
+            st.sidebar.success(f"{division} login successful ✅")
+            st.rerun()
+        else:
+            st.sidebar.error("Incorrect password ❌")
+
+    st.stop()
+
+#st.sidebar.success("Logged in")
+
 st.sidebar.header("🔎 Filter Options")
 
 # --------------------------------------------------------
@@ -245,42 +282,6 @@ else:
 affiliate_list = ["All"] + filtered_affiliates
 selected_affiliate = st.sidebar.selectbox("Select Affiliate", affiliate_list)
 
-# -----------------------------------------------------
-# Sidebar Login
-# -----------------------------------------------------
-if not st.session_state.authenticated:
-    st.sidebar.title("🔐 Login")
-
-    password_input = st.sidebar.text_input(
-        "Enter Password",
-        type="password"
-    )
-
-    login_btn = st.sidebar.button("Login")
-
-    if login_btn:
-        if password_input == GLOBAL_PASSWORD:
-            st.session_state.authenticated = True
-            st.session_state.user_division = None  # Global user
-            st.sidebar.success("Global login successful ✅")
-            st.rerun()
-
-        elif password_input in DIVISION_PASSWORDS.values():
-            division = [
-                d for d, p in DIVISION_PASSWORDS.items()
-                if p == password_input
-            ][0]
-
-            st.session_state.authenticated = True
-            st.session_state.user_division = division
-            st.sidebar.success(f"{division} login successful ✅")
-            st.rerun()
-        else:
-            st.sidebar.error("Incorrect password ❌")
-
-    st.stop()
-
-#st.sidebar.success("Logged in")
 
 if st.sidebar.button("🚪 Logout"):
     st.session_state.authenticated = False
@@ -413,5 +414,6 @@ if not filtered_df.empty:
 else:
     st.warning("⚠️ No data found for the selected filters.")
     
+
 
 
