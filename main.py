@@ -216,6 +216,7 @@ if st.session_state.user_division:
         unsafe_allow_html=True
     )
 
+
 else:
     # Global user → full access
     division_list = sorted(df['Division'].dropna().unique())
@@ -413,6 +414,7 @@ if not filtered_df.empty:
         st.info("No RFQs found for the selected Client/Affiliate filters.")       
 else:
     st.warning("⚠️ No data found for the selected filters.")
+
 
 
 
