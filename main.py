@@ -143,7 +143,7 @@ def connect_to_google():
     return creds
 
 # ---------------------- LOAD SHEET ---------------------- #
-@st.cache_data(ttl=60)
+@st.cache_data()
 def load_sheet():
     creds = connect_to_google()
     sheets_api = build("sheets", "v4", credentials=creds)
@@ -209,12 +209,14 @@ if not st.session_state.authenticated:
 
     if login_btn:
         if password_input == GLOBAL_PASSWORD:
+            st.cache_data.clear()
             st.session_state.authenticated = True
-            st.session_state.user_division = None  # Global user
+            st.session_state.user_division = None
             st.sidebar.success("Global login successful ✅")
             st.rerun()
 
         elif password_input in DIVISION_PASSWORDS.values():
+            st.cache_data.clear()
             division = [
                 d for d, p in DIVISION_PASSWORDS.items()
                 if p == password_input
@@ -423,6 +425,7 @@ if not filtered_df.empty:
 else:
     st.warning("⚠️ No data found for the selected filters.")
     
+
 
 
 
