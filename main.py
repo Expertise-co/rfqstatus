@@ -26,6 +26,14 @@ if "authenticated" not in st.session_state:
 if "user_division" not in st.session_state:
     st.session_state.user_division = None
 
+if "force_refresh" not in st.session_state:
+    st.session_state.force_refresh = False
+
+if st.session_state.force_refresh:
+    st.cache_data.clear()
+    st.session_state.force_refresh = False
+
+
 # -----------------------------------------------------
 # Modern UI Styling + Gradient Sidebar + KPI Cards
 # -----------------------------------------------------
@@ -209,22 +217,20 @@ if not st.session_state.authenticated:
 
     if login_btn:
         if password_input == GLOBAL_PASSWORD:
-            #st.cache_data.clear()
+            st.session_state.force_refresh = True
             st.session_state.authenticated = True
             st.session_state.user_division = None
-            st.sidebar.success("Global login successful ✅")
             st.rerun()
 
         elif password_input in DIVISION_PASSWORDS.values():
-            #st.cache_data.clear()
             division = [
                 d for d, p in DIVISION_PASSWORDS.items()
                 if p == password_input
             ][0]
-
+        
+            st.session_state.force_refresh = True
             st.session_state.authenticated = True
             st.session_state.user_division = division
-            st.sidebar.success(f"{division} login successful ✅")
             st.rerun()
         else:
             st.sidebar.error("Incorrect password ❌")
@@ -288,11 +294,11 @@ selected_affiliate = st.sidebar.selectbox("Select Affiliate", affiliate_list)
 
 
 if st.sidebar.button("🚪 Logout"):
-    st.session_state.clear()
-    #st.cache_data.clear()
-    #st.session_state.authenticated = False
-    #st.session_state.user_division = None
+    st.session_state.force_refresh = True
+    st.session_state.authenticated = False
+    st.session_state.user_division = None
     st.rerun()
+
 
 # Final Filtering
 filtered_df = df.copy()
@@ -355,10 +361,6 @@ if st.session_state.get("user_division") is None:
 
             st.session_state.force_refresh = True
             st.rerun()
-            
-if st.session_state.get("force_refresh"):
-    st.cache_data.clear()
-    st.session_state.force_refresh = False
 
 # Status Count + KPI Cards
 if not filtered_df.empty:
@@ -427,11 +429,6 @@ if not filtered_df.empty:
 else:
     st.warning("⚠️ No data found for the selected filters.")
     
-
-
-
-
-
 
 
 
