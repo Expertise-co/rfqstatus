@@ -123,22 +123,6 @@ section[data-testid="stSidebar"] button[kind="primary"] {
 </style>
 """, unsafe_allow_html=True)
 
-
-st.markdown("""
-<style>
-/* Reduce top padding of main content */
-[data-testid="stAppViewContainer"] {
-    padding-top: 0.5rem;
-}
-
-/* Optional: fine-tune title spacing */
-h1 {
-    margin-top: 0rem !important;
-    padding-top: 0rem !important;
-}
-</style>
-""", unsafe_allow_html=True)
-
 st.markdown("""
 <style>
 .dashboard-title {
@@ -452,6 +436,7 @@ if not filtered_df.empty:
         st.info("No RFQs found for the selected Client/Affiliate filters.")       
 else:
     st.warning("⚠️ No data found for the selected filters.")
+
 
 
 
