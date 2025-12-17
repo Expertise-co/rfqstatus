@@ -139,15 +139,27 @@ h1 {
 </style>
 """, unsafe_allow_html=True)
 
-
+st.markdown("""
+<style>
+.dashboard-title {
+    text-align: center;
+    font-size: 2.8rem;
+    font-weight: 800;
+    margin-top: -6rem;   /* move UP */
+    margin-bottom: 0rem;
+    color: #2c3e50;
+}
+</style>
+""", unsafe_allow_html=True)
 
 # -----------------------------------------------------
 # DASHBOARD UI
 # -----------------------------------------------------
-st.markdown(
-    "<h1 style='text-align:center;'>📊 RFQ Status Dashboard</h1>",
-    unsafe_allow_html=True
-)
+st.markdown("""
+<div class="dashboard-title">
+    📊 RFQ Status Dashboard
+</div>
+""", unsafe_allow_html=True)
 
 # -----------------------------------------------------
 # GOOGLE SHEETS CONFIG
@@ -440,6 +452,7 @@ if not filtered_df.empty:
         st.info("No RFQs found for the selected Client/Affiliate filters.")       
 else:
     st.warning("⚠️ No data found for the selected filters.")
+
 
 
 
