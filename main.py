@@ -133,43 +133,6 @@ st.markdown(
 )
 
 # -----------------------------------------------------
-# Sidebar Login
-# -----------------------------------------------------
-if not st.session_state.authenticated:
-    st.sidebar.title("🔐 Login")
-
-    password_input = st.sidebar.text_input(
-        "Enter Password",
-        type="password"
-    )
-
-    login_btn = st.sidebar.button("Login")
-
-    if login_btn:
-        if password_input == GLOBAL_PASSWORD:
-            load_sheet.clear()
-            st.session_state.authenticated = True
-            st.session_state.user_division = None
-            st.rerun()
-
-        elif password_input in DIVISION_PASSWORDS.values():
-            division = [
-                d for d, p in DIVISION_PASSWORDS.items()
-                if p == password_input
-            ][0]
-            
-            load_sheet.clear()
-            st.session_state.authenticated = True
-            st.session_state.user_division = division
-            st.rerun()
-        else:
-            st.sidebar.error("Incorrect password ❌")
-
-    st.stop()
-
-#st.sidebar.success("Logged in")
-
-# -----------------------------------------------------
 # GOOGLE SHEETS CONFIG
 # -----------------------------------------------------
 SPREADSHEET_ID = st.secrets["DRIVE_SHEET_ID"]
@@ -218,6 +181,45 @@ def get_csv_last_modified_time():
     return datetime.fromisoformat(modified_time.replace("Z", "")).strftime(
         "%d-%b-%Y"
     )
+
+
+# -----------------------------------------------------
+# Sidebar Login
+# -----------------------------------------------------
+if not st.session_state.authenticated:
+    st.sidebar.title("🔐 Login")
+
+    password_input = st.sidebar.text_input(
+        "Enter Password",
+        type="password"
+    )
+
+    login_btn = st.sidebar.button("Login")
+
+    if login_btn:
+        if password_input == GLOBAL_PASSWORD:
+            load_sheet.clear()
+            st.session_state.authenticated = True
+            st.session_state.user_division = None
+            st.rerun()
+
+        elif password_input in DIVISION_PASSWORDS.values():
+            division = [
+                d for d, p in DIVISION_PASSWORDS.items()
+                if p == password_input
+            ][0]
+            
+            load_sheet.clear()
+            st.session_state.authenticated = True
+            st.session_state.user_division = division
+            st.rerun()
+        else:
+            st.sidebar.error("Incorrect password ❌")
+
+    st.stop()
+
+#st.sidebar.success("Logged in")
+
 
 try:
     last_upload = get_csv_last_modified_time()
@@ -425,5 +427,6 @@ if not filtered_df.empty:
         st.info("No RFQs found for the selected Client/Affiliate filters.")       
 else:
     st.warning("⚠️ No data found for the selected filters.")
+
 
 
