@@ -476,6 +476,3 @@ if not filtered_df.empty:
         st.info("No RFQs found for the selected Client/Affiliate filters.")       
 else:
     st.warning("⚠️ No data found for the selected filters.")
-    
-
-
