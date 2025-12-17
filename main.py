@@ -125,59 +125,6 @@ section[data-testid="stSidebar"] button[kind="primary"] {
 
 st.markdown("""
 <style>
-/* 🔥 Kill caret + blinking line in Streamlit select & multiselect */
-div[data-baseweb="select"] [contenteditable="true"] {
-    caret-color: transparent !important;
-    color: transparent !important;
-    outline: none !important;
-}
-
-/* Prevent text highlight */
-div[data-baseweb="select"] [contenteditable="true"]::selection {
-    background: transparent !important;
-}
-
-/* Remove focus ring */
-div[data-baseweb="select"] [contenteditable="true"]:focus {
-    outline: none !important;
-    box-shadow: none !important;
-}
-
-/* Keep selected values visible */
-div[data-baseweb="select"] span {
-    color: white !important;
-}
-</style>
-""", unsafe_allow_html=True)
-
-st.markdown("""
-<style>
-/* 🔥 Completely collapse BaseWeb editable input (the | line source) */
-div[data-baseweb="select"] [contenteditable="true"] {
-    width: 0px !important;
-    min-width: 0px !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    caret-color: transparent !important;
-    color: transparent !important;
-    overflow: hidden !important;
-    white-space: nowrap !important;
-}
-
-/* Prevent focus artifacts */
-div[data-baseweb="select"] [contenteditable="true"]:focus {
-    outline: none !important;
-    box-shadow: none !important;
-}
-
-/* Ensure selected text/chips remain visible */
-div[data-baseweb="select"] span {
-    color: white !important;
-}
-</style>
-""", unsafe_allow_html=True)
-
-
 
 
 # -----------------------------------------------------
@@ -200,6 +147,7 @@ if not st.session_state.authenticated:
 
     if login_btn:
         if password_input == GLOBAL_PASSWORD:
+            load_sheet.clear()
             st.session_state.authenticated = True
             st.session_state.user_division = None
             st.rerun()
@@ -209,7 +157,8 @@ if not st.session_state.authenticated:
                 d for d, p in DIVISION_PASSWORDS.items()
                 if p == password_input
             ][0]
-        
+            
+            load_sheet.clear()
             st.session_state.authenticated = True
             st.session_state.user_division = division
             st.rerun()
@@ -476,3 +425,4 @@ if not filtered_df.empty:
         st.info("No RFQs found for the selected Client/Affiliate filters.")       
 else:
     st.warning("⚠️ No data found for the selected filters.")
+
