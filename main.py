@@ -123,14 +123,14 @@ section[data-testid="stSidebar"] button[kind="primary"] {
 </style>
 """, unsafe_allow_html=True)
 
-st.markdown("""
-<style>
-
 
 # -----------------------------------------------------
 # DASHBOARD UI
 # -----------------------------------------------------
-st.title("📊 RFQ Status Dashboard")
+st.markdown(
+    "<h1 style='text-align:center;'>📊 RFQ Status Dashboard</h1>",
+    unsafe_allow_html=True
+)
 
 # -----------------------------------------------------
 # Sidebar Login
@@ -425,4 +425,5 @@ if not filtered_df.empty:
         st.info("No RFQs found for the selected Client/Affiliate filters.")       
 else:
     st.warning("⚠️ No data found for the selected filters.")
+
 
