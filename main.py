@@ -132,7 +132,7 @@ st.markdown("""
 # -----------------------------------------------------
 st.markdown("""
 <h1 style="text-align:center; margin-bottom: 0.5em;">
-    📊 RFQ Status Dashboard
+     RFQ Status Dashboard
 </h1>
 """, unsafe_allow_html=True)
 
@@ -427,6 +427,7 @@ if not filtered_df.empty:
 else:
     st.warning("⚠️ No data found for the selected filters.")
     
+
 
 
 
