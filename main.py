@@ -4,6 +4,7 @@ import altair as alt
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
 from datetime import datetime
+# -*- coding: utf-8 -*-
 
 # -----------------------------------------------------
 # Make Screen Wide
@@ -426,6 +427,7 @@ if not filtered_df.empty:
 else:
     st.warning("⚠️ No data found for the selected filters.")
     
+
 
 
 
