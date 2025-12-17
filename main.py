@@ -237,10 +237,6 @@ df['Clients'] = df['Clients'].astype(str).str.strip()
 df['Affiliate'] = df['Affiliate'].astype(str).str.strip()
 df['Date'] = pd.to_datetime(df['Date'], errors='coerce')
 
-if st.sidebar.button("🔄 Refresh Data"):
-    load_sheet.clear()
-    get_csv_last_modified_time.clear()
-
 st.sidebar.header("🔎 Filter Options")
 
 # --------------------------------------------------------
@@ -427,6 +423,7 @@ if not filtered_df.empty:
         st.info("No RFQs found for the selected Client/Affiliate filters.")       
 else:
     st.warning("⚠️ No data found for the selected filters.")
+
 
 
 
