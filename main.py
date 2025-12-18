@@ -236,9 +236,9 @@ if not st.session_state.authenticated:
 
 try:
     last_upload = get_csv_last_modified_time()
-    st.sidebar.info(f"📅 Last Upload:\n{last_upload}")
+    st.sidebar.info(f"📅 Last Updated:\n{last_upload}")
 except Exception:
-    st.sidebar.warning("📅 Last Upload:\nNot available")
+    st.sidebar.warning("📅 Last Updated:\nNot available")
 
 # -----------------------------------------------------
 # Load Data from Google Sheets
@@ -436,6 +436,7 @@ if not filtered_df.empty:
         st.info("No RFQs found for the selected Client/Affiliate filters.")       
 else:
     st.warning("⚠️ No data found for the selected filters.")
+
 
 
 
