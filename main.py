@@ -141,7 +141,7 @@ st.markdown("""
 # -----------------------------------------------------
 st.markdown("""
 <div class="dashboard-title">
-    📊 RFQ Status Dashboard
+    📊 RFQ Client Wise Dashboard
 </div>
 """, unsafe_allow_html=True)
 
@@ -436,6 +436,7 @@ if not filtered_df.empty:
         st.info("No RFQs found for the selected Client/Affiliate filters.")       
 else:
     st.warning("⚠️ No data found for the selected filters.")
+
 
 
 
