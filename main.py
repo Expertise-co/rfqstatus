@@ -450,7 +450,7 @@ if not filtered_df.empty:
             )
 
             # Bars
-            bars = base.mark_bar(color="#4b7bec")
+            bars = base.mark_bar(color="#1d2147")
 
             # Client name INSIDE bar (clamped)
             client_text = base.mark_text(
@@ -522,6 +522,7 @@ if not filtered_df.empty:
         st.info("No RFQs found for the selected Client/Affiliate filters.")       
 else:
     st.warning("⚠️ No data found for the selected filters.")
+
 
 
 
