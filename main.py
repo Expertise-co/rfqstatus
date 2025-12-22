@@ -399,91 +399,91 @@ if not filtered_df.empty:
     # ---------------------------
     # Top 5 Clients by RFQ Count
     # ---------------------------
-        if selected_divisions:
-            division_filtered_df = df[df['Division'].isin(selected_divisions)]
-        else:
-            division_filtered_df = df.copy()
+    if selected_divisions:
+        division_filtered_df = df[df['Division'].isin(selected_divisions)]
+    else:
+        division_filtered_df = df.copy()
+
+    top_clients_df = (
+        division_filtered_df
+        .groupby("Clients")
+        .size()
+        .reset_index(name="RFQ Count")
+        .sort_values("RFQ Count", ascending=False)
+        .head(10)
+    )
     
-        top_clients_df = (
-            division_filtered_df
-            .groupby("Clients")
-            .size()
-            .reset_index(name="RFQ Count")
-            .sort_values("RFQ Count", ascending=False)
-            .head(10)
-        )
-        
-        col_left, spacer, col_right = st.columns([0.8, 0.1, 1])
-    
-        # ---------------------------
-        # RFQ Status Breakdown (LEFT)
-        # ---------------------------
-        with col_left:
-            st.subheader("📌 RFQ Status Breakdown")
-            st.dataframe(result_df, use_container_width=True, hide_index=True)
-    
-        # ---------------------------
-        # Top 5 Clients Bar Chart (RIGHT)
-        # ---------------------------
-        with col_right:
-            st.subheader("🏆 Top 10 Clients by RFQ Count")
-    
-            if not top_clients_df.empty:
-    
-                base = alt.Chart(top_clients_df).encode(
-                    y=alt.Y(
-                        "Clients:N",
-                        sort=alt.SortField(
-                            field="RFQ Count",
-                            order="descending"
-                        ),
-                        axis=alt.Axis(
-                            title=None,
-                            labels=False,
-                            ticks=False
-                        )
+    col_left, spacer, col_right = st.columns([0.8, 0.1, 1])
+
+    # ---------------------------
+    # RFQ Status Breakdown (LEFT)
+    # ---------------------------
+    with col_left:
+        st.subheader("📌 RFQ Status Breakdown")
+        st.dataframe(result_df, use_container_width=True, hide_index=True)
+
+    # ---------------------------
+    # Top 5 Clients Bar Chart (RIGHT)
+    # ---------------------------
+    with col_right:
+        st.subheader("🏆 Top 10 Clients by RFQ Count")
+
+        if not top_clients_df.empty:
+
+            base = alt.Chart(top_clients_df).encode(
+                y=alt.Y(
+                    "Clients:N",
+                    sort=alt.SortField(
+                        field="RFQ Count",
+                        order="descending"
                     ),
-                    x=alt.X(
-                        "RFQ Count:Q",
-                        axis=alt.Axis(title="RFQ Count")
+                    axis=alt.Axis(
+                        title=None,
+                        labels=False,
+                        ticks=False
                     )
+                ),
+                x=alt.X(
+                    "RFQ Count:Q",
+                    axis=alt.Axis(title="RFQ Count")
                 )
-    
-                # Bars
-                bars = base.mark_bar(color="#4b7bec")
-    
-                # Client name INSIDE bar (clamped)
-                client_text = base.mark_text(
-                    align="left",
-                    baseline="middle",
-                    dx=6,
-                    color="white",
-                    fontWeight="bold",
-                    clip=True   # 🔥 prevents overflow
-                ).encode(
-                    x=alt.value(8),  # fixed inside offset
-                    text="Clients:N"
-                )
-    
-                # RFQ count at bar end
-                count_text = base.mark_text(
-                    align="left",
-                    baseline="middle",
-                    dx=8,
-                    color="#2c3e50",
-                    fontWeight="bold"
-                ).encode(
-                    x="RFQ Count:Q",
-                    text="RFQ Count:Q"
-                )
-    
-                client_chart = (
-                    bars
-                    + client_text
-                    + count_text
-                ).properties(height=425)
-    
-                st.altair_chart(client_chart, use_container_width=True)
+            )
+
+            # Bars
+            bars = base.mark_bar(color="#4b7bec")
+
+            # Client name INSIDE bar (clamped)
+            client_text = base.mark_text(
+                align="left",
+                baseline="middle",
+                dx=6,
+                color="white",
+                fontWeight="bold",
+                clip=True   # 🔥 prevents overflow
+            ).encode(
+                x=alt.value(8),  # fixed inside offset
+                text="Clients:N"
+            )
+
+            # RFQ count at bar end
+            count_text = base.mark_text(
+                align="left",
+                baseline="middle",
+                dx=8,
+                color="#2c3e50",
+                fontWeight="bold"
+            ).encode(
+                x="RFQ Count:Q",
+                text="RFQ Count:Q"
+            )
+
+            client_chart = (
+                bars
+                + client_text
+                + count_text
+            ).properties(height=425)
+
+            st.altair_chart(client_chart, use_container_width=True)
 
     st.subheader("📊 Status Distribution Chart")
     chart = alt.Chart(result_df).mark_bar(color="#4f80ff").encode(
@@ -522,6 +522,7 @@ if not filtered_df.empty:
         st.info("No RFQs found for the selected Client/Affiliate filters.")       
 else:
     st.warning("⚠️ No data found for the selected filters.")
+
 
 
 
