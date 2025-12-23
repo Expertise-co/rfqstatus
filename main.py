@@ -48,7 +48,7 @@ section[data-testid="stSidebar"] * { color: white !important; }
 div[data-baseweb="select"] div { background-color: #2f3640 !important; color: white !important; }
 div[data-baseweb="select"] span { color: white !important; }
 ul[role="listbox"] li { color: black !important; }
-.kpi-card { background: white; padding: 18px; border-radius: 14px; box-shadow: 0px 4px 10px rgba(0,0,0,0.08); text-align: center; border-left: 6px solid #4b7bec; }
+.kpi-card { background: white; padding: 18px; border-radius: 14px; box-shadow: 0px 4px 10px rgba(0,0,0,0.08); text-align: center; border-left: 6px solid #4b7bec; margin-bottom: 30px; }
 .kpi-title { color: #576574; font-size: 16px; font-weight: 600; }
 .kpi-value { color: #2d3436; font-size: 32px; font-weight: 800; margin-top: -5px; }
 [data-testid="stDataFrame"] { background: white !important; border: 1.5px solid #dcdde1 !important; border-radius: 12px !important; padding: 12px !important; box-shadow: 0px 4px 12px rgba(0,0,0,0.06) !important; }
@@ -522,6 +522,7 @@ if not filtered_df.empty:
         st.info("No RFQs found for the selected Client/Affiliate filters.")       
 else:
     st.warning("⚠️ No data found for the selected filters.")
+
 
 
 
