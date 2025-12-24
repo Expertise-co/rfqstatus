@@ -480,12 +480,21 @@ if not filtered_df.empty:
             )
 
             client_chart = (
-                bars
-                + client_text
-                + count_text
-            ).properties(height=425)
+                bars + label_text
+            ).properties(
+                height=425,
+                background="white"   # 👈 Force white background
+            ).configure_view(
+                strokeWidth=0
+            ).configure_axis(
+                labelColor="#2c3e50",    # text color only
+                titleColor="#2c3e50",
+                gridColor="#e0e0e0"
+            ).configure_legend(
+                labelColor="#2c3e50",
+                titleColor="#2c3e50"
+            )
 
-            st.altair_chart(client_chart, use_container_width=True)
 
     st.subheader("📊 Status Distribution Chart")
     chart = alt.Chart(result_df).mark_bar(color="#4f80ff").encode(
@@ -524,6 +533,7 @@ if not filtered_df.empty:
         st.info("No RFQs found for the selected Client/Affiliate filters.")       
 else:
     st.warning("⚠️ No data found for the selected filters.")
+
 
 
 
