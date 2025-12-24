@@ -480,20 +480,23 @@ if not filtered_df.empty:
             )
 
             client_chart = (
-                bars + label_text
+                bars
+                + client_text     # client name inside bar
+                + count_text      # RFQ count at bar end
             ).properties(
                 height=425,
-                background="white"   # 👈 Force white background
+                background="white"   # 👈 force white background
             ).configure_view(
                 strokeWidth=0
             ).configure_axis(
-                labelColor="#2c3e50",    # text color only
+                labelColor="#2c3e50",
                 titleColor="#2c3e50",
                 gridColor="#e0e0e0"
             ).configure_legend(
                 labelColor="#2c3e50",
                 titleColor="#2c3e50"
             )
+
 
             st.altair_chart(client_chart, use_container_width=True)
 
@@ -535,6 +538,7 @@ if not filtered_df.empty:
         st.info("No RFQs found for the selected Client/Affiliate filters.")       
 else:
     st.warning("⚠️ No data found for the selected filters.")
+
 
 
 
