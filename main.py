@@ -5,7 +5,7 @@ from google.oauth2 import service_account
 from googleapiclient.discovery import build
 from datetime import datetime
 
-alt.themes.enable("none")
+#alt.themes.enable("none")
 
 # -----------------------------------------------------
 # Make Screen Wide
@@ -538,6 +538,7 @@ if not filtered_df.empty:
         st.info("No RFQs found for the selected Client/Affiliate filters.")       
 else:
     st.warning("⚠️ No data found for the selected filters.")
+
 
 
 
