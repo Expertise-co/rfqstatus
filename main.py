@@ -495,6 +495,8 @@ if not filtered_df.empty:
                 titleColor="#2c3e50"
             )
 
+            st.altair_chart(client_chart, use_container_width=True)
+
 
     st.subheader("📊 Status Distribution Chart")
     chart = alt.Chart(result_df).mark_bar(color="#4f80ff").encode(
@@ -533,6 +535,7 @@ if not filtered_df.empty:
         st.info("No RFQs found for the selected Client/Affiliate filters.")       
 else:
     st.warning("⚠️ No data found for the selected filters.")
+
 
 
 
