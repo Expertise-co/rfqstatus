@@ -502,18 +502,63 @@ if not filtered_df.empty:
 
 
     st.subheader("📊 Status Distribution Chart")
-    chart = alt.Chart(result_df).mark_bar(color="#4f80ff").encode(
+    chart = (
+    alt.Chart(result_df)
+    .mark_bar(color="#4f80ff")
+    .encode(
         x=alt.X('Status:N', axis=alt.Axis(labelAngle=0)),
-        y='Percentage (%):Q',
+        y=alt.Y('Percentage (%):Q'),
         tooltip=['Status', 'RFQ Count', 'Percentage (%)']
-    ).properties(height=400)
+    )
+    .properties(
+        height=400,
+        background="white"
+    )
+    .configure_view(strokeWidth=0)
+    .configure_axis(
+        labelColor="#2c3e50",
+        titleColor="#2c3e50",
+        gridColor="#e0e0e0"
+    )
+    )
+
     st.altair_chart(chart, use_container_width=True)
 
+
     st.subheader("📈 RFQ Trend Over Time")
+
     trend_df = filtered_df.dropna(subset=['Date'])
     trend_df['Month'] = trend_df['Date'].dt.to_period('M').astype(str)
-    monthly_counts = trend_df.groupby("Month").size()
-    st.line_chart(monthly_counts)
+
+    monthly_counts = (
+        trend_df
+        .groupby("Month")
+        .size()
+        .reset_index(name="RFQ Count")
+    )
+
+    line_chart = (
+        alt.Chart(monthly_counts)
+        .mark_line(color="#EF7F1A", point= True)
+        .encode(
+            x=alt.X("Month:N", title="Month"),
+            y=alt.Y("RFQ Count:Q", title="RFQ Count"),
+            tooltip=["Month", "RFQ Count"]
+        )
+        .properties(
+            height=400,
+            background="white"
+        )
+        .configure_view(strokeWidth=0)
+        .configure_axis(
+            labelColor="#2c3e50",
+            titleColor="#2c3e50",
+            gridColor="#e0e0e0"
+        )
+    )
+
+    st.altair_chart(line_chart, use_container_width=True)
+
 
         # ---------------------------
     # Client–Affiliate RFQ Count Table
@@ -538,24 +583,4 @@ if not filtered_df.empty:
         st.info("No RFQs found for the selected Client/Affiliate filters.")       
 else:
     st.warning("⚠️ No data found for the selected filters.")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
