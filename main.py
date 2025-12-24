@@ -452,7 +452,7 @@ if not filtered_df.empty:
             )
 
             # Bars
-            bars = base.mark_bar(color="#4b7bec")
+            bars = base.mark_bar(color="#1d2147")
 
             # Client name INSIDE bar (clamped)
             client_text = base.mark_text(
@@ -504,7 +504,7 @@ if not filtered_df.empty:
     st.subheader("📊 Status Distribution Chart")
     chart = (
     alt.Chart(result_df)
-    .mark_bar(color="#4f80ff")
+    .mark_bar(color="#1d2147")
     .encode(
         x=alt.X('Status:N', axis=alt.Axis(labelAngle=0)),
         y=alt.Y('Percentage (%):Q'),
@@ -583,4 +583,5 @@ if not filtered_df.empty:
         st.info("No RFQs found for the selected Client/Affiliate filters.")       
 else:
     st.warning("⚠️ No data found for the selected filters.")
+
 
