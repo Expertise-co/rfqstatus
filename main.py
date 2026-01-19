@@ -251,6 +251,7 @@ df['Division'] = df['Division'].astype(str).str.strip()
 df['Clients'] = df['Clients'].astype(str).str.strip()
 df['Affiliate'] = df['Affiliate'].astype(str).str.strip()
 df['Date'] = pd.to_datetime(df['Date'], errors='coerce')
+df['Year'] = df['Date'].dt.year.astype("Int64")
 
 st.sidebar.header("🔎 Filter Options")
 
@@ -287,6 +288,14 @@ else:
         default=division_list
     )
 
+available_years = sorted(df['Year'].dropna().unique().tolist())
+year_options = ['All'] + available_years
+selected_year = st.sidebar.selectbox(
+    "Select Year",
+    options= year_options,
+    index=0
+)
+
 # Client Dropdown
 if selected_divisions:
     filtered_clients = sorted(df[df['Division'].isin(selected_divisions)]['Clients'].dropna().unique())
@@ -321,6 +330,8 @@ if selected_client != "All":
     filtered_df = filtered_df[filtered_df['Clients'] == selected_client]
 if selected_affiliate != "All":
     filtered_df = filtered_df[filtered_df['Affiliate'] == selected_affiliate]
+if selected_year != "All":
+    filtered_df = filtered_df[filtered_df['Year'] == selected_year]
 
 # ---------------------- SIDEBAR: UPLOAD ---------------------- #
 if st.session_state.get("user_division") is None:
@@ -527,23 +538,34 @@ if not filtered_df.empty:
 
     st.subheader("📈 RFQ Trend Over Time")
 
-    trend_df = filtered_df.dropna(subset=['Date'])
-    trend_df['Month'] = trend_df['Date'].dt.to_period('M').astype(str)
+    trend_df = filtered_df.dropna(subset=['Date']).copy()
+
+    trend_df['YearMonth'] = trend_df['Date'].dt.to_period('M').dt.to_timestamp()
 
     monthly_counts = (
         trend_df
-        .groupby("Month")
+        .groupby('YearMonth')
         .size()
-        .reset_index(name="RFQ Count")
+        .reset_index(name='RFQ Count')
     )
 
     line_chart = (
         alt.Chart(monthly_counts)
-        .mark_line(color="#EF7F1A", point= True)
+        .mark_line(color="#EF7F1A", point=True)
         .encode(
-            x=alt.X("Month:N", title="Month"),
+            x=alt.X(
+                "YearMonth:T",
+                title="Month",
+                axis=alt.Axis(
+                    format="%b-%Y",     # 👈 Apr-2025
+                    labelAngle=-45
+                )
+            ),
             y=alt.Y("RFQ Count:Q", title="RFQ Count"),
-            tooltip=["Month", "RFQ Count"]
+            tooltip=[
+                alt.Tooltip("YearMonth:T", title="Month", format="%B %Y"),
+                "RFQ Count:Q"
+            ]
         )
         .properties(
             height=400,
@@ -559,8 +581,7 @@ if not filtered_df.empty:
 
     st.altair_chart(line_chart, use_container_width=True)
 
-
-        # ---------------------------
+    # ---------------------------
     # Client–Affiliate RFQ Count Table
     # ---------------------------
     st.subheader("📋 RFQs Received by Client & Affiliate")
@@ -583,6 +604,7 @@ if not filtered_df.empty:
         st.info("No RFQs found for the selected Client/Affiliate filters.")       
 else:
     st.warning("⚠️ No data found for the selected filters.")
+
 
 
 
