@@ -412,13 +412,20 @@ if not filtered_df.empty:
     # ---------------------------
     # Top 5 Clients by RFQ Count
     # ---------------------------
+    top_clients_filtered_df = df.copy()
+
     if selected_divisions:
-        division_filtered_df = df[df['Division'].isin(selected_divisions)]
-    else:
-        division_filtered_df = df.copy()
+        top_clients_filtered_df = top_clients_filtered_df[
+            top_clients_filtered_df['Division'].isin(selected_divisions)
+        ]
+
+    if selected_year != "All":
+        top_clients_filtered_df = top_clients_filtered_df[
+            top_clients_filtered_df['Year'] == selected_year
+        ]
 
     top_clients_df = (
-        division_filtered_df
+        top_clients_filtered_df
         .groupby("Clients")
         .size()
         .reset_index(name="RFQ Count")
@@ -604,6 +611,7 @@ if not filtered_df.empty:
         st.info("No RFQs found for the selected Client/Affiliate filters.")       
 else:
     st.warning("⚠️ No data found for the selected filters.")
+
 
 
 
