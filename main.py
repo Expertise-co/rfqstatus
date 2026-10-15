@@ -86,15 +86,12 @@ st.markdown("""
 * { box-sizing: border-box; }
 #MainMenu, header, footer { visibility: hidden; }
 [data-testid="stToolbar"] { display: none; }
-
-/* Keep the sidebar open/close toggle reachable even though header is hidden */
 [data-testid="collapsedControl"],
 [data-testid="stSidebarCollapsedControl"],
 [data-testid="stExpandSidebarButton"] {
     display: flex !important;
     visibility: visible !important;
 }
-
 html, body,
 [data-testid="stAppViewContainer"],
 [data-testid="stAppViewContainer"] > .main {
