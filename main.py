@@ -427,7 +427,10 @@ except Exception as e:
     st.stop()
 
 if not df.empty:
-    for col in ["Division", "Clients", "Affiliate", "Status"]:
+    # make sure the column exists even if the sheet doesn't have it yet
+    if "Sub-Division" not in df.columns:
+        df["Sub-Division"] = ""
+    for col in ["Division", "Sub-Division", "Clients", "Affiliate", "Status"]:
         if col in df.columns:
             df[col] = df[col].astype(str).str.strip()
     df["Date"] = parse_dates(df["Date"])
@@ -506,20 +509,30 @@ else:
     division_list      = sorted(df['Division'].dropna().unique())
     selected_divisions = st.sidebar.multiselect("Division(s)", options=division_list, default=division_list)
 
+# Sub-Division options depend on the selected division(s)
+div_scope_df = df[df['Division'].isin(selected_divisions)] if selected_divisions else df
+sub_division_list = sorted(s for s in div_scope_df['Sub-Division'].dropna().unique() if s)
+selected_sub_divisions = st.sidebar.multiselect(
+    "Sub-Division(s)", options=sub_division_list, default=sub_division_list
+)
+
+# Base data after Division + Sub-Division filters (used by the dropdowns below)
+scope_df = div_scope_df.copy()
+# only filter when the user has narrowed the selection (keeps rows with blank Sub-Division visible)
+if selected_sub_divisions and len(selected_sub_divisions) < len(sub_division_list):
+    scope_df = scope_df[scope_df['Sub-Division'].isin(selected_sub_divisions)]
+
 available_years = sorted(int(y) for y in df['Year'].dropna().unique())
 selected_year   = st.sidebar.selectbox("Year", options=['All'] + available_years, index=0)
 
-filtered_clients = (
-    sorted(df[df['Division'].isin(selected_divisions)]['Clients'].dropna().unique())
-    if selected_divisions else sorted(df['Clients'].dropna().unique())
-)
-selected_client = st.sidebar.selectbox("Client", ["All"] + filtered_clients)
+filtered_clients = sorted(scope_df['Clients'].dropna().unique())
+selected_client  = st.sidebar.selectbox("Client", ["All"] + filtered_clients)
 
 if selected_client == "All":
-    filtered_affiliates = sorted(df[df['Division'].isin(selected_divisions)]['Affiliate'].dropna().unique())
+    filtered_affiliates = sorted(scope_df['Affiliate'].dropna().unique())
 else:
     filtered_affiliates = sorted(
-        df[(df['Division'].isin(selected_divisions)) & (df['Clients'] == selected_client)]['Affiliate'].dropna().unique()
+        scope_df[scope_df['Clients'] == selected_client]['Affiliate'].dropna().unique()
     )
 selected_affiliate = st.sidebar.selectbox("Affiliate", ["All"] + filtered_affiliates)
 
@@ -555,9 +568,7 @@ if st.sidebar.button("🚪 Sign Out", use_container_width=True):
     st.rerun()
 
 # ─── Apply Filters ────────────────────────────────────────────────────────────
-filtered_df = df.copy()
-if selected_divisions:
-    filtered_df = filtered_df[filtered_df['Division'].isin(selected_divisions)]
+filtered_df = scope_df.copy()   # already filtered by Division + Sub-Division
 if selected_client != "All":
     filtered_df = filtered_df[filtered_df['Clients'] == selected_client]
 if selected_affiliate != "All":
@@ -622,11 +633,9 @@ if not filtered_df.empty:
     awarded_ratio  = (awarded / submitted * 100) if submitted > 0 else 0
     declined_ratio = (declined / total_rfqs * 100) if total_rfqs > 0 else 0
 
-    inactive_base = (
-        df[df['Division'].isin(selected_divisions)].dropna(subset=["Date"]).copy()
-        if selected_divisions else df.dropna(subset=["Date"]).copy()
-    )
-    last_rfq_df      = inactive_base.groupby(["Affiliate", "Division"], as_index=False).agg(Last_RFQ_Date=("Date", "max"))
+    # Inactive clients: based on Division + Sub-Division scope (ignores year/client/affiliate filters)
+    inactive_base = scope_df.dropna(subset=["Date"]).copy()
+    last_rfq_df      = inactive_base.groupby(["Affiliate", "Division", "Sub-Division"], as_index=False).agg(Last_RFQ_Date=("Date", "max"))
     cutoff_date      = pd.Timestamp.today() - pd.DateOffset(months=6)
     inactive_clients = last_rfq_df[last_rfq_df["Last_RFQ_Date"] < cutoff_date].sort_values("Last_RFQ_Date").copy()
     inactive_clients["Last_RFQ_Date"] = inactive_clients["Last_RFQ_Date"].dt.strftime("%d-%m-%Y")
@@ -671,7 +680,7 @@ if not filtered_df.empty:
         "Percentage (%)": status_pct.round(2).values
     }).reset_index(drop=True)
 
-    top_base = df[df['Division'].isin(selected_divisions)].copy() if selected_divisions else df.copy()
+    top_base = scope_df.copy()
     if selected_year != "All":
         top_base = top_base[top_base['Year'] == selected_year]
     top_clients_df = (
