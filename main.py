@@ -16,26 +16,7 @@ st.set_page_config(
 
 # ─── Google Sheets config ─────────────────────────────────────────────────────
 SPREADSHEET_ID = "16dyupQvFCgPxCez-zKj3mgl62tIH2jR2sYahYS7D8U8"
-RANGE = "rfq_2025.csv"   # name of the tab in the Google Sheet
-CACHE_TTL = 300          # seconds – dashboard re-reads the sheet at most every 5 min
-
-# ─── Passwords ────────────────────────────────────────────────────────────────
-# Preferred: keep these in Streamlit secrets (see notes) instead of in GitHub.
-# The hard-coded values below are only a fallback so nothing breaks while you
-# migrate – delete them once the secrets are set in Streamlit Cloud.
-_FALLBACK_GLOBAL = "rfq@251$"
-_FALLBACK_DIVISIONS = {
-    "PMTA Sales Org":    "PM@TAst1",
-    "E&I Sales Org.":    "stE&I521",
-    "CSD Sales Org.":    "20!CSDsh",
-    "E- Cube Sales Org": "E&CUBE67",
-    "EMBS Sales Org.":   "M51BS&lm",
-    "ISSD Sales Org.":   "IS25SDc$",
-    "PSD Sales Org.":    "521@PS&D",
-    "RSD Sales Org.":    "at@RSD61",
-    "TSSD Sales Org.":   "TS@SDyo3",
-    "ValVe Sales Org.":  "V71SDblu",
-}
+RANGE = "rfq_2025.csv"
 
 try:
     GLOBAL_PASSWORD = st.secrets["global_password"]
