@@ -16,17 +16,15 @@ st.set_page_config(
 
 # ─── Google Sheets config ─────────────────────────────────────────────────────
 SPREADSHEET_ID = "16dyupQvFCgPxCez-zKj3mgl62tIH2jR2sYahYS7D8U8"
-RANGE = "rfq_2025.csv"
+RANGE = "'rfq_2025.csv'"   # name of the tab in the Google Sheet (quoted because of the dot)
 
+# ─── Passwords (Streamlit secrets only) ───────────────────────────────────────
 try:
     GLOBAL_PASSWORD = st.secrets["global_password"]
-except Exception:
-    GLOBAL_PASSWORD = _FALLBACK_GLOBAL
-
-try:
     DIVISION_PASSWORDS = dict(st.secrets["division_passwords"])
 except Exception:
-    DIVISION_PASSWORDS = _FALLBACK_DIVISIONS
+    st.error("Passwords are not configured. Add `global_password` and `division_passwords` to Streamlit secrets.")
+    st.stop()
 
 if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
@@ -337,7 +335,7 @@ def connect_to_google():
     )
 
 
-@st.cache_data(ttl=CACHE_TTL, show_spinner="Loading data…")
+@st.cache_data(show_spinner="Loading data…")
 def load_sheet():
     creds = connect_to_google()
     sheets_api = build("sheets", "v4", credentials=creds, cache_discovery=False)
@@ -356,7 +354,7 @@ def load_sheet():
     return pd.DataFrame(rows, columns=header)
 
 
-@st.cache_data(ttl=CACHE_TTL)
+@st.cache_data
 def get_last_modified_date():
     """Last time the Google Sheet file was modified (IST)."""
     try:
@@ -391,12 +389,30 @@ def replace_sheet_with(upload_df: pd.DataFrame):
 
 
 def parse_dates(series: pd.Series) -> pd.Series:
-    """Parse DD-MM-YYYY first; fall back to day-first parsing for anything else."""
+    """Parse dates robustly and never return a date in the future."""
     s = series.astype(str).str.strip()
-    parsed = pd.to_datetime(s, format="%d-%m-%Y", errors="coerce")
-    missing = parsed.isna() & s.ne("") & s.str.lower().ne("nan")
-    if missing.any():
-        parsed.loc[missing] = pd.to_datetime(s[missing], dayfirst=True, errors="coerce")
+    blank = s.eq("") | s.str.lower().isin(["nan", "none", "nat"])
+    parsed = pd.Series(pd.NaT, index=s.index, dtype="datetime64[ns]")
+
+    # 1) try explicit, unambiguous formats in order
+    for fmt in ["%d-%m-%Y", "%d/%m/%Y", "%Y-%m-%d", "%d-%m-%y", "%d/%m/%y"]:
+        todo = parsed.isna() & ~blank
+        if not todo.any():
+            break
+        parsed.loc[todo] = pd.to_datetime(s[todo], format=fmt, errors="coerce")
+
+    # 2) general fallback (day-first)
+    todo = parsed.isna() & ~blank
+    if todo.any():
+        parsed.loc[todo] = pd.to_datetime(s[todo], dayfirst=True, errors="coerce")
+
+    # 3) anything in the future is almost certainly a day/month swap -> try month-first
+    today = pd.Timestamp.today().normalize()
+    future = parsed > today
+    if future.any():
+        swapped = pd.to_datetime(s[future], dayfirst=False, errors="coerce")
+        parsed.loc[future] = swapped.where(swapped <= today, pd.NaT)
+
     return parsed
 
 
@@ -414,6 +430,15 @@ if not df.empty:
     for col in ["Division", "Sub-Division", "Clients", "Affiliate", "Status"]:
         if col in df.columns:
             df[col] = df[col].astype(str).str.strip()
+
+    # Merge spelling variants of a division (case, extra spaces, trailing dots)
+    # into the exact name used in the division passwords.
+    def _norm(v):
+        return " ".join(str(v).replace(".", "").lower().split())
+
+    _canonical = {_norm(k): k for k in DIVISION_PASSWORDS}
+    df["Division_raw"] = df["Division"]
+    df["Division"] = df["Division"].map(lambda v: _canonical.get(_norm(v), v))
     df["Date"] = parse_dates(df["Date"])
     df["Year"] = df["Date"].dt.year.astype("Int64")
 
@@ -556,6 +581,17 @@ if selected_affiliate != "All":
     filtered_df = filtered_df[filtered_df['Affiliate'] == selected_affiliate]
 if selected_year != "All":
     filtered_df = filtered_df[filtered_df['Year'] == selected_year]
+
+# ─── Data check (admin only) ──────────────────────────────────────────────────
+if st.session_state.user_division is None:
+    with st.expander("🛠 Data check (admin)"):
+        st.write(f"Rows loaded from Google Sheet: **{len(df):,}**")
+        st.write(f"Rows with a missing / unreadable date: **{int(df['Date'].isna().sum()):,}**")
+        st.write("Rows per Division value exactly as found in the sheet:")
+        st.dataframe(
+            df["Division_raw"].map(repr).value_counts().rename_axis("Division (raw)").reset_index(name="Rows"),
+            use_container_width=True, hide_index=True,
+        )
 
 # ─── Chart palette ────────────────────────────────────────────────────────────
 CHART_BG = "#ffffff"
