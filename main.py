@@ -582,17 +582,6 @@ if selected_affiliate != "All":
 if selected_year != "All":
     filtered_df = filtered_df[filtered_df['Year'] == selected_year]
 
-# ─── Data check (admin only) ──────────────────────────────────────────────────
-if st.session_state.user_division is None:
-    with st.expander("🛠 Data check (admin)"):
-        st.write(f"Rows loaded from Google Sheet: **{len(df):,}**")
-        st.write(f"Rows with a missing / unreadable date: **{int(df['Date'].isna().sum()):,}**")
-        st.write("Rows per Division value exactly as found in the sheet:")
-        st.dataframe(
-            df["Division_raw"].map(repr).value_counts().rename_axis("Division (raw)").reset_index(name="Rows"),
-            use_container_width=True, hide_index=True,
-        )
-
 # ─── Chart palette ────────────────────────────────────────────────────────────
 CHART_BG = "#ffffff"
 AXIS_C   = "#8592a8"
