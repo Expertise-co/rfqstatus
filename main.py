@@ -16,7 +16,7 @@ st.set_page_config(
 
 # ─── Google Sheets config ─────────────────────────────────────────────────────
 SPREADSHEET_ID = "16dyupQvFCgPxCez-zKj3mgl62tIH2jR2sYahYS7D8U8"
-RANGE = "'rfq_2025.csv'"   # name of the tab in the Google Sheet (quoted because of the dot)
+RANGE = "'rfq_2025.csv'"
 
 # ─── Passwords (Streamlit secrets only) ───────────────────────────────────────
 try:
@@ -479,6 +479,7 @@ if not st.session_state.authenticated:
         if hmac.compare_digest(password_input, str(GLOBAL_PASSWORD)):
             st.session_state.authenticated = True
             st.session_state.user_division = None
+            st.cache_data.clear()   # fresh data on every login
             st.rerun()
         else:
             matched = [d for d, p in DIVISION_PASSWORDS.items()
@@ -486,6 +487,7 @@ if not st.session_state.authenticated:
             if matched:
                 st.session_state.authenticated = True
                 st.session_state.user_division = matched[0]
+                st.cache_data.clear()   # fresh data on every login
                 st.rerun()
             else:
                 st.sidebar.error("Incorrect password. Please try again.")
