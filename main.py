@@ -20,8 +20,8 @@ RANGE = "'rfq_2025.csv'"   # name of the tab in the Google Sheet (quoted because
 
 # ─── Passwords (Streamlit secrets only) ───────────────────────────────────────
 try:
-    GLOBAL_PASSWORD = st.secrets["global_password"]
-    DIVISION_PASSWORDS = dict(st.secrets["division_passwords"])
+    GLOBAL_PASSWORD = st.secrets["GLOBAL_PASSWORD"]
+    DIVISION_PASSWORDS = dict(st.secrets["DIVISION_PASSWORDS"])
 except Exception:
     st.error("Passwords are not configured. Add `global_password` and `division_passwords` to Streamlit secrets.")
     st.stop()
